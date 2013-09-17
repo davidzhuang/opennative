@@ -1,0 +1,82 @@
+<!---Inherits base.html --->
+{% extends "supply/base.html" %}
+
+<!---title block --->
+{% block page_title %}
+<title>New Site, Easy Native Ad Platform</title>
+{% endblock %}
+
+<!---Block for Navigation Bar on top of page --->
+{% block nav_bar_block %}
+	<ul class="nav navbar-nav">
+            <li><a href="{% url 'supply:index' %}">Orders</a></li>
+            <li class="active"><a href="{% url 'supply:inventory' %}">Inventory</a></li>
+            <li><a href="{% url 'supply:reports' %}">Reports</a></li>
+	</ul>
+{% endblock %}
+
+ <!---Block for menu list on left side --->   
+{% block side_bar_block %}            
+              <li><a href="{% url 'supply:inventory' %}">Sites</a></li>
+              <li class="active"><a href="{% url 'supply:adunits' %}">AdUnits</a></li>
+{% endblock %}
+
+<!---Block for right pane --->            
+{% block right_pane_block %} 
+          <div class="panel panel-default table-responsive">
+            <div class="panel-heading">
+              <h3 class="panel-title">Edit ad unit</h3>
+            </div>
+            <div class="panel-body">                        
+              <form class="form-horizontal" role="form" action="{% url 'supply:adunit_edit' 11 %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="name" class="col-lg-2 control-label">Name</label>
+                  <div class="col-lg-10">
+                    <input type="text" class="form-control" name="name" value="Sample AdUnit Name">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="type" class="col-lg-2 control-label">Type</label>
+                  <div class="col-lg-10">
+                    <select class="form-control" name="type">
+                      <option value="STD">Standard Display</option>
+                      <option value="ISP" selected="selected">Native - In-Stream Short Post</option>
+                      <option value="IIMG">Native - In-Stream Image</option>
+                      <option value="IVID">Native - In-Stream Video</option>
+                      <option value="LP">Long Post</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="type" class="col-lg-2 control-label">Target Window</label>
+                  <div class="col-lg-10">
+                    <select class="form-control" name="target">
+                      <option value="_top" selected="selected">_top: Same Window</option>
+                      <option value="_blank">_blank: New Window</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="size" class="col-lg-2 control-label">Size</label>
+                  <div class="col-lg-10">
+                    <input type="text" class="form-control" name="size" value="300x250">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="desc" class="col-lg-2 control-label">Description</label>
+                  <div class="col-lg-10">
+                    <textarea class="form-control" rows="4" name="desc" value="Ad unit for native in-stream ads"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-default">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>            
+            <div class="panel-footer">
+            </div>
+          </div><!--/panel-->
+{% endblock %}

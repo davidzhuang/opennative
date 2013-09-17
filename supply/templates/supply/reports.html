@@ -1,0 +1,52 @@
+<!---Inherits base.html --->
+{% extends "supply/base.html" %}
+
+<!---title block --->
+{% block page_title %}
+<title>Reports for Easy Native Ad Platform</title>
+{% endblock %}
+
+<!---Block for Navigation Bar on top of page --->
+{% block nav_bar_block %}
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'supply:index' %}">Orders</a></li>
+            <li><a href="{% url 'supply:inventory' %}">Inventory</a></li>
+            <li class="active"><a href="{% url 'supply:reports' %}">Reports</a></li>
+          </ul>
+{% endblock %}
+
+ <!---Block for menu list on left side --->   
+{% block side_bar_block %}            
+              <li class="active"><a href="{% url 'supply:reports' %}">Orders & LineItems</a></li>
+              <li><a href="{% url 'supply:reports_sites' %}">Sites & AdUnits</a></li>
+{% endblock %}
+
+<!---Block for right pane --->            
+{% block right_pane_block %} 
+          <div class="panel panel-default table-responsive">
+            <div class="panel-heading">
+              <h3 class="panel-title">Orders & LineItems</h3>
+            </div>
+            <div class="panel-body">                        
+            </div>            
+            <div class="table-responsive">
+            <table class="table">         
+              <tr>
+                <th>Reports</th>
+              </tr>
+              <tr>
+                <td><a href="{% url 'supply:report_detail' 1 %}">Report 1</a></td>
+              </tr>
+              <tr>
+                <td><a href="{% url 'supply:report_detail' 2 %}">Report 2</a></td>
+              </tr>
+              <tr>
+                <td><a href="{% url 'supply:report_detail' 3 %}">Report 3</a></td>
+              </tr>
+            </table>
+            </div>            
+            <div class="panel-footer">
+            </div>
+          </div><!--/panel-->
+        
+{% endblock %}

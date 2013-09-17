@@ -1,0 +1,39 @@
+<!---Inherits base.html --->
+{% extends "supply/frame.html" %}
+
+{% load staticfiles %}
+
+<!---title block --->
+{% block page_title %}
+  <title>Sign In - Easy Native Ad Platform</title>
+{% endblock %}
+
+  {% block page_file_links %}
+    <!-- Custom styles for this template -->
+    <link href="{% static 'supply/css/signin.css' %}" rel="stylesheet">
+  {% endblock %}
+
+<!---Block for Navigation Bar on top of page --->
+{% block nav_bar_block %}
+        <ul class="nav navbar-nav">
+                <li><a href="{% url 'supply:index' %}">Orders</a></li>
+                <li><a href="{% url 'supply:inventory' %}">Inventory</a></li>
+                <li><a href="{% url 'supply:reports' %}">Reports</a></li>
+        </ul>
+{% endblock %}
+
+  {% block main_block %}
+    <div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" class="form-control" placeholder="Email address" autofocus>
+        <input type="password" class="form-control" placeholder="Password">
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+    </div> <!-- /container -->
+
+  {% endblock %}

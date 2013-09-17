@@ -1,0 +1,55 @@
+<!---Inherits base.html --->
+{% extends "supply/base.html" %}
+
+<!---title block --->
+{% block page_title %}
+    <title>Easy Native Ad Platform</title>
+{% endblock %}
+
+<!---Block for Navigation Bar on top of page --->
+{% block nav_bar_block %}
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'supply:index' %}">Orders</a></li>
+            <li class="active"><a href="{% url 'supply:inventory' %}">Inventory</a></li>
+            <li><a href="{% url 'supply:reports' %}">Reports</a></li>
+          </ul>
+{% endblock %}
+
+ <!---Block for menu list on left side --->
+{% block side_bar_block %}
+              <li class="active"><a href="{% url 'supply:inventory' %}">Sites</a></li>
+              <li><a href="{% url 'supply:adunits' %}">AdUnits</a></li>
+{% endblock %}
+
+<!---Block for right pane --->
+{% block right_pane_block %}
+          <div class="panel panel-default table-responsive">
+            <div class="panel-heading">
+              <h3 class="panel-title">Edit site</h3>
+            </div>
+            <div class="panel-body">                        
+              <form class="form-horizontal" role="form" action="{% url 'supply:site_edit' 1 %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="inputSiteName" class="col-lg-2 control-label">Name</label>
+                  <div class="col-lg-10">
+                    <input type="text" class="form-control" name="inputSiteName" value="Sample Site Name">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputSiteURL" class="col-lg-2 control-label">URL</label>
+                  <div class="col-lg-10">
+                    <input type="url" class="form-control" id="inputSiteURL" value="http://sample.site.com">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-default">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>            
+            <div class="panel-footer">
+            </div>
+          </div><!--/panel-->
+{% endblock %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html> {% load staticfiles %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{% static 'bootstrap-3.0.0/assets/ico/favicon.png' %}">
+    
+	<!---title block --->
+	{% block page_title %}
+    <title>Base Page</title>
+	{% endblock %}
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap-3.0.0/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'supply/css/offcanvas.css' %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="{% static 'bootstrap-3.0.0/assets/js/html5shiv.js' %}"></script>
+      <script src="{% static 'bootstrap-3.0.0/assets/js/respond.min.js' %}"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Easy Native</a>
+        </div>
+        <div class="collapse navbar-collapse">
+        <!---Block for Navigation Bar on top of page --->
+        {% block nav_bar_block %}
+
+        {% endblock %}
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+
+    <div class="container">
+
+      <div class="row row-offcanvas row-offcanvas-left">
+      
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-pills nav-stacked">
+            <!---Block for menu list on left side --->
+			{% block side_bar_block %}            
+   			
+   			{% endblock %}
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+
+        <div class="col-xs-12 col-sm-9">
+          <p class="pull-left visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>    
+		<!---Block for right pane --->        
+        {% block right_pane_block %} 
+
+        {% endblock %}
+        </div><!--/span-->
+      </div><!--/row-->
+  </div><!--/.container-->
+  
+  <div class="container">
+      <hr>
+      <footer>
+        <p>&copy; Company 2013</p>
+      </footer>
+
+    </div><!--/.container-->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'bootstrap-3.0.0/assets/js/jquery.js' %}"></script>
+    <script src="{% static 'bootstrap-3.0.0/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'supply/js/offcanvas.js' %}"></script>
+
+  </body>
+
+</html>

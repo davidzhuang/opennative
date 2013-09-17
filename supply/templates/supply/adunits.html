@@ -1,0 +1,74 @@
+<!---Inherits base.html --->
+{% extends "supply/base.html" %}
+
+<!---title block --->
+{% block page_title %}
+<title>Inventory for Easy Native Ad Platform</title>
+{% endblock %}
+
+<!---Block for Navigation Bar on top of page --->
+{% block nav_bar_block %}
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'supply:index' %}">Orders</a></li>
+            <li class="active"><a href="{% url 'supply:inventory' %}">Inventory</a></li>
+            <li><a href="{% url 'supply:reports' %}">Reports</a></li>
+          </ul>
+{% endblock %}
+
+ <!---Block for menu list on left side --->
+{% block side_bar_block %}
+              <li><a href="{% url 'supply:inventory' %}">Sites</a></li>
+              <li class="active"><a href="{% url 'supply:adunits' %}">AdUnits</a></li>
+{% endblock %}
+
+<!---Block for right pane --->
+{% block right_pane_block %}
+          <div class="panel panel-default table-responsive">
+            <div class="panel-heading">
+              <h3 class="panel-title">AdUnits</h3>
+            </div>
+
+            <div class="panel-body table-responsive">  
+
+              <div class="panel panel-default table-responsive">
+                <div class="panel-body table-responsive">  
+                  <h3 class="panel-title">Site: Test Site 1</h3>
+                  <table class="table"> 
+                    <tr>
+                      <th>Name</th><th>Type</th><th>Target</th><th>Sizes</th><th>Description</th>
+                    </tr>
+                    <tr>
+                      <td><a href="{% url 'supply:adunit_edit' 11 %}">AdUnit 11</a></td><td>Native - In-Stream Short Post</td><td>_top</td><td></td><td>Front page unit</td>
+                    </tr>
+                    <tr>
+                      <td><a href="{% url 'supply:adunit_edit' 12 %}">AdUnit 12</a></td><td>Native - In-Stream Image</td><td>_blank</td><td></td><td></td>
+                    </tr>
+                  </table>
+                  <form action="{% url 'supply:adunit_new' 1 %}">                      
+                    <button type="submit" class="btn btn-default">New AdUnit</button> 
+                  </form>
+                </div>
+              </div><!--/panel-->
+
+              <div class="panel panel-default table-responsive">
+                <div class="panel-body table-responsive">  
+                  <h3 class="panel-title">Site: Test Site 2</h3>
+                  <table class="table"> 
+                    <tr>
+                      <th>Name</th><th>Type</th><th>Target</th><th>Sizes</th><th>Description</th>
+                    </tr>
+                    <tr>
+                      <td><a href="{% url 'supply:adunit_edit' 21 %}">AdUnit 21</a></td><td>Native - In-Stream Short Post</td><td>_top</td><td></td><td></td>
+                    </tr>
+                  </table>
+                  <form action="{% url 'supply:adunit_new' 2 %}">                      
+                    <button type="submit" class="btn btn-default">New AdUnit</button> 
+                  </form>
+                </div>
+              </div><!--/panel-->
+
+            </div><!--/panel-body-->
+            <div class="panel-footer">
+            </div>
+          </div><!--/panel-->
+{% endblock %}
