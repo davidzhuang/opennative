@@ -35,11 +35,11 @@
             <div class="table-responsive">
               <table class="table"> 
                 <tr>
-                  <th>Name</th><th>URL</th>
+                  <th>Name</th><th>URL</th><th>site_id</th>
                 </tr>
                 {% for site_entry in site_collection %}       
                 <tr>
-                  <td><a href="{% url 'supply:site_edit' 1 %}">{{site_entry.name}}</a></td><td>{{site_entry.url}}</td>
+                  <td><a href="{% url 'supply:site_edit' site_entry.id %}">{{site_entry.name}}</a></td><td>{{site_entry.url}}</td><td>{{site_entry.id}}</td>
                 {% endfor %}
               </table>
             </div>            
