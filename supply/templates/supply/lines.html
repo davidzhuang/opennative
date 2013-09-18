@@ -30,19 +30,25 @@
             <div class="panel-body table-responsive">  
               <div class="panel panel-default table-responsive">
                 <div class="panel-body table-responsive">  
-                  <h3 class="panel-title">Order: Test Order 1</h3>
+                {% for order in all_orders %}	                
+                  <h3 class="panel-title"> Order: {{order}}</h3>
                   <table class="table"> 
                     <tr>
                       <th>Name</th><th>Platform</th><th>Type</th>
-                    </tr>
-                    <tr>
-                      <td><a href="{% url 'supply:line_edit' 11 %}">LineItem 11</a></td><td>Web</td><td>Standard</td>
-                    </tr>
-                    <tr>
-                      <td><a href="{% url 'supply:line_edit' 12 %}">LineItem 12</a></td><td>Mobile</td><td>Network</td>
-                    </tr>
-                  </table>
-                  <form action="{% url 'supply:line_new' 1 %}">                      
+                     </tr>
+                     {% for line_items in line_item_list_by_order %}
+                     <p> big list: {{line_item_list_by_order}} </p>
+                     <p> small list: {{line_itmes}} </p>
+                         {% for line_item_entry in line_items %}
+                         <tr>
+					        <td><a href="{% url 'supply:line_edit' {{line_item_entry.id}}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
+				         </tr>
+				         {% endfor %}
+				     {% endfor %}				     
+                    </table>
+                {% endfor %}
+  
+  		    <form action="{% url 'supply:line_new' 1 %}">                      
                     <button type="submit" class="btn btn-default">New LineItem</button> 
                   </form>
                 </div>

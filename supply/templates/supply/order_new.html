@@ -24,8 +24,8 @@
 <!---Block for right pane --->            
 {% block right_pane_block %} 
     
-          <form class="form-horizontal" role="form" action="{% url 'supply:order_new' %}" method="post">
-            {% csrf_token %}
+    <form class="form-horizontal" role="form" action="{% url 'supply:order_new' %}" method="post">
+    {% csrf_token %}
             
     {% if errors %}
         <p style="color: red;">

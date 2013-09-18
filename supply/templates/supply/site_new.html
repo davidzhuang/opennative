@@ -27,19 +27,48 @@
             <div class="panel-heading">
               <h3 class="panel-title">New site</h3>
             </div>
+  
+  
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+        
+            {% if form.site_name.errors %}
+                <div class="field">
+                <label for="site_name">Site Name:</label>
+                {{ form.site_name.errors }}
+                </div>
+            {% endif %}   
+             
+            {% if form.site_URL.errors %}
+                <div class="field">
+                <label for="site_URL">URL:</label>
+                {{ form.site_URL.errors }}
+                </div>
+             {% endif %}   
+ 
+     {% endif %}
+                
             <div class="panel-body">                        
               <form class="form-horizontal" role="form" action="{% url 'supply:site_new' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                  <label for="inputSiteName" class="col-lg-2 control-label">Name</label>
+                  <label for="site_name" class="col-lg-2 control-label">Name</label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control" id="inputSiteName" placeholder="Site Name">
+                    <input type="text" class="form-control" name="site_name" placeholder="Site Name">
+                    {% if form.site_name %}
+                         {{form.site_name}}
+                    {% endif %}
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="inputSiteURL" class="col-lg-2 control-label">URL</label>
                   <div class="col-lg-10">
-                    <input type="url" class="form-control" id="inputSiteURL" placeholder="Site URL">
+                    <input type="url" class="form-control" name="site_URL" placeholder="Site URL" >
+                    {% if form.site_URL %}
+                        {{form.site_URL}}
+                    {% endif %}                    
                   </div>
                 </div>
                 <div class="form-group">
