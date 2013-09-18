@@ -30,7 +30,7 @@ class User(models.Model):
 class Site(models.Model):
     name = models.CharField(max_length=64, unique=True)
     pub = models.ForeignKey(Publisher)
-    domain = models.CharField(max_length=64, unique=True)
+    url = models.CharField(max_length=64, unique=True)
     category = models.CharField(max_length=16)
     def __unicode__(self):
         return self.name
