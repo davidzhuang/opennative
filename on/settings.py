@@ -74,6 +74,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     '/Users/david/Sites',
+    '/Users/davidzhuang/Sites',
 )
 
 # List of finder classes that know how to find static files in
@@ -159,3 +160,5 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = ('on.backends.EmailAuthBackend',)
+
+LOGIN_URL = '/supply/signin'

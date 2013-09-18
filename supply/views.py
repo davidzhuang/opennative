@@ -1,13 +1,33 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django import forms
 from supply.models import *
 from supply.forms import site_form
 
 def signin(request):
-    return render(request, "supply/signin.html", {})
+    logout(request)
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('supply:index'))
+            else:
+                # Return a 'disabled account' error message
+                return render(request, "supply/signin.html", {'errors': 'Disabled accounti, please re-activate, or use a different account'})
+        else:
+            # Return an 'invalid login' error message.
+            return render(request, "supply/signin.html", {'errors': 'Username/email and password do not match'})
+    else:
+        return render(request, "supply/signin.html", {})
 
+
+@login_required
 def index(request):
     all_orders = Order.objects.all()
     return render(request, "supply/index.html", {'order_collection': all_orders})

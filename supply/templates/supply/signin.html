@@ -13,25 +13,28 @@
     <link href="{% static 'supply/css/signin.css' %}" rel="stylesheet">
   {% endblock %}
 
-<!---Block for Navigation Bar on top of page --->
-{% block nav_bar_block %}
+  <!---Block for Navigation Bar on top of page --->
+  {% block nav_bar_block %}
         <ul class="nav navbar-nav">
                 <li><a href="{% url 'supply:index' %}">Orders</a></li>
                 <li><a href="{% url 'supply:inventory' %}">Inventory</a></li>
                 <li><a href="{% url 'supply:reports' %}">Reports</a></li>
         </ul>
-{% endblock %}
+  {% endblock %}
 
   {% block main_block %}
     <div class="container">
 
-      <form class="form-signin">
+      <form class="form-signin" action=""  method="POST">
+        {% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="form-control" placeholder="Email address" autofocus>
-        <input type="password" class="form-control" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+        {% if errors %}
+            <p style="color: red;">
+                {{errors}}
+            </p>
+        {% endif %}
+        <input type="text" class="form-control" name="username" placeholder="Username or Email" autofocus>
+        <input type="password" class="form-control" name="password" placeholder="Password">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       </form>
     </div> <!-- /container -->
