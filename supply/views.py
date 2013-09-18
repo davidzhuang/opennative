@@ -10,9 +10,6 @@ def signin(request):
 
 def index(request):
     all_orders = Order.objects.all()
-    print '\n retrieved data,trying to print\n'
-    for item in all_orders:
-        print item 
     return render(request, "supply/index.html", {'order_collection': all_orders})
 
 def order_new(request):
@@ -33,7 +30,7 @@ def order_new(request):
             order.pub = current_user.pub 
             
             order.save();             
-            return HttpResponseRedirect('/supply/inventory.html')
+            return HttpResponseRedirect(reverse('supply:inventory'))
         else:
             print 'invalid POST input\n'
             err_invalid_new_order_input = 'invalid new order input'  
@@ -42,7 +39,35 @@ def order_new(request):
         return render(request, 'supply/order_new.html', {})       
 
 def order_edit(request, order_id):
-    return render(request, "supply/order_edit.html", {})
+    print 'order_edit: order_id is: %s\n'%order_id
+     
+    order_to_edit = Order.objects.get(id=order_id)
+    
+    print 'order_edit: order retrieved is: %s\n'%order_to_edit
+    
+    if request.method == 'POST':
+        print 'order_edit: post\n'
+        name_entry=request.POST.get('inputOrderName')
+        company_entry=request.POST.get('inputCompany')
+        print 'name is: %s \n' % name_entry
+        print 'company is: %s \n' % company_entry
+        	     
+        if ( name_entry and company_entry):
+            order_to_edit.name = name_entry
+            order_to_edit.company= company_entry
+                        
+            order_to_edit.save();             
+            return HttpResponseRedirect(reverse('supply:index'))
+        else:
+            print 'invalid POST input\n'
+            err_invalid_new_order_input = 'Invalid order editing'  
+            return render(request, 'supply/order_edit.html', {'errors':err_invalid_new_order_input, 'name':name_entry, 'company':company_entry})
+    else:
+        print 'order_edit: HTTP %s method \n'%request.method
+        print 'order_edit: HTTP GET, id is: %s\n'%order_id
+        print 'order_edit: HTTP GET, name is: %s\n'%order_to_edit.name
+        print 'order_edit: HTTP GET, company is: %s\n'%order_to_edit.company
+        return render(request, 'supply/order_edit.html', {'id':order_id, 'name':order_to_edit.name, 'company':order_to_edit.company})       
     
 def lines(request):
     all_order_items = Order.objects.all()

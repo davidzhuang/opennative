@@ -39,7 +39,7 @@
                 </tr>
                 {% for order_entry in order_collection %}       
                 <tr>
-					<td><a href="{% url 'supply:order_edit' 1 %}">{{order_entry.name}}</a></td><td>{{order_entry.status}}</td><td>{{order_entry.company}}</td><td>Sep 1, 2013 12:00pm</td><td>Sep 30, 2013, 11:59pm</td>
+					<td><a href="{% url 'supply:order_edit' order_entry.id %}">{{order_entry.name}}</a></td><td>{{order_entry.status}}</td><td>{{order_entry.company}}</td><td>Sep 1, 2013 12:00pm</td><td>Sep 30, 2013, 11:59pm</td>
 				</tr>
 				{% endfor %}
 				</table> 
