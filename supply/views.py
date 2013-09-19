@@ -55,11 +55,14 @@ def order_edit(request, order_id):
         return render(request, 'supply/order_edit.html', {'id':order_id, 'name':order_to_edit.name, 'company':order_to_edit.company})       
     
 def lines(request):
+    class all_lines_by_order:
+        line_item_list = []
+        one_order = None   
+    
+    all_orders_with_line_items = []
+
     all_order_items = Order.objects.all()
     all_line_items = LineItem.objects.all()
-     
-    order_list = []
-    line_item_list_by_order = []
     
     for order in all_order_items:
         line_item_list = []
@@ -70,12 +73,14 @@ def lines(request):
                 
                 #add order to order list if it has line items, and that it is the first line item
                 if len(line_item_list) == 1:
-                    order_list.append(order)
+                    one_combined_entry = all_lines_by_order()
+                    one_combined_entry.order = order
+                    
+        if len(line_item_list) > 0:
+          one_combined_entry.line_item_list = line_item_list                     
+          all_orders_with_line_items.append(one_combined_entry)
 
-        if len(line_item_list) > 0:        
-            line_item_list_by_order.append(line_item_list)   
-        
-    return render(request, "supply/lines.html", {'all_orders':order_list, 'line_item_list_by_order': line_item_list_by_order})
+    return render(request, "supply/lines.html", {'all_orders_with_line_items':all_orders_with_line_items})
     
 def line_new(request, order_id):
     return render(request, "supply/line_new.html", {})

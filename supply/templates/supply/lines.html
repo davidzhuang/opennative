@@ -27,50 +27,30 @@
             <div class="panel-heading">
               <h3 class="panel-title">Line Items</h3>
             </div>
+
             <div class="panel-body table-responsive">  
+            {% for one_combined_entry in all_orders_with_line_items %} 
               <div class="panel panel-default table-responsive">
                 <div class="panel-body table-responsive">  
-                {% for order in all_orders %}	                
-                  <h3 class="panel-title"> Order: {{order}}</h3>
-                  <table class="table"> 
-                    <tr>
-                      <th>Name</th><th>Platform</th><th>Type</th>
-                     </tr>
-                     {% for line_items in line_item_list_by_order %}
-                     <p> big list: {{line_item_list_by_order}} </p>
-                     <p> small list: {{line_itmes}} </p>
-                         {% for line_item_entry in line_items %}
-                         <tr>
-					        <td><a href="{% url 'supply:line_edit' {{line_item_entry.id}}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
-				         </tr>
-				         {% endfor %}
-				     {% endfor %}				     
+
+                      <h3 class="panel-title"> Order: {{one_combined_entry.order.name}}</h3>
+                      <table class="table"> 
+                          <tr>
+                          <th>Name</th><th>Platform</th><th>Type</th>
+                          </tr>
+                          {% for line_item_entry in one_combined_entry.line_item_list %}
+                              <tr>
+					            <td><a href="{% url 'supply:line_edit' {{line_item_entry.id}}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
+				               </tr>
+				         {% endfor %}         
                     </table>
-                {% endfor %}
-  
-  		    <form action="{% url 'supply:line_new' 1 %}">                      
+                
+  		          <form action="{% url 'supply:line_new' one_combined_entry.order.id %}">                      
                     <button type="submit" class="btn btn-default">New LineItem</button> 
                   </form>
                 </div>
               </div><!--/panel-->
-
-              <div class="panel panel-default table-responsive">
-                <div class="panel-body table-responsive">  
-                  <h3 class="panel-title">Order: Test Order 2</h3>
-                  <table class="table"> 
-                    <tr>
-                      <th>Name</th><th>Platform</th><th>Type</th>
-                    </tr>
-                    <tr>
-                      <td><a href="{% url 'supply:line_edit' 21 %}">LineItem 21</a></td><td>Web</td><td>Exclusive</td>
-                    </tr>
-                  </table>
-                  <form action="{% url 'supply:line_new' 2 %}">                      
-                    <button type="submit" class="btn btn-default">New LineItem</button> 
-                  </form>
-                </div>
-              </div><!--/panel-->
-
+            {% endfor %}
             </div><!--/panel-body-->
             <div class="panel-footer">
             </div>
