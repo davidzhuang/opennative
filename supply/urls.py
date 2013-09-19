@@ -4,8 +4,6 @@ from supply import views
 urlpatterns = patterns('supply.views',
     # ex: /supply/
     url(r'^$', 'index', name='index'),
-    # ex: /supply/signin
-    url(r'^signin/$', 'signin', name='signin'),
 
     # ex: /supply/orders/new
     url(r'^orders/new/$', 'order_new', name='order_new'),
