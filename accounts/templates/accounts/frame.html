@@ -46,9 +46,9 @@
           <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
             <li><a href="#">{{ user.get_username }}</a></li>
-            <li><a href="{% url 'supply:signin' %}">Sign out</a></li>
+            <li><a href="{% url 'accounts:signin' %}">Sign out</a></li>
           {% else %}
-            <li><a href="{% url 'supply:signin' %}">Sign in</a></li>
+            <li><a href="{% url 'accounts:signin' %}">Sign in</a></li>
           {% endif %}
           </ul>
         </div><!-- /.nav-collapse -->
