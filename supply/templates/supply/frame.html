@@ -9,12 +9,13 @@
     
     <!---title block --->
     {% block page_title %}
-    <title>Easy Native</title>
+    <title>Open Native Ad Platform</title>
     {% endblock %}
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'bootstrap-3.0.0/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
+    <!-- Custom files for this template -->
     {% block page_file_links %}
     {% endblock %}
 
@@ -35,19 +36,27 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Easy Native</a>
+          <a class="navbar-brand" href="#">Open Native</a>
         </div>
         <div class="collapse navbar-collapse">
         <!---Block for Navigation Bar on top of page --->
         {% block nav_bar_block %}
-
         {% endblock %}
+
+          <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+            <li><a href="#">{{ user.get_username }}</a></li>
+            <li><a href="{% url 'supply:signin' %}">Sign out</a></li>
+          {% else %}
+            <li><a href="{% url 'supply:signin' %}">Sign in</a></li>
+          {% endif %}
+          </ul>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->
     </div><!-- /.navbar -->
 
-    {% block main_block %}
-
+    <!-- Main row block - between header and footer -->
+    {% block main_row_block %}
     {% endblock %}
 
     <div class="container">
@@ -55,18 +64,16 @@
       <footer>
         <p>&copy; Company 2013</p>
       </footer>
-
     </div><!--/.container-->
 
-
-    {% block page_end_file_links %}
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{% static 'bootstrap-3.0.0/assets/js/jquery.js' %}"></script>
     <script src="{% static 'bootstrap-3.0.0/dist/js/bootstrap.min.js' %}"></script>
+    <!---Block for page end file links --->
+    {% block page_end_file_links %}
     {% endblock %}
 
   </body>
-
 </html>
