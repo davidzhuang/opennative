@@ -3,17 +3,34 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django import forms
 from supply.models import *
+from accounts.models import UserProfile
 from supply.forms import site_form
+
+def get_user_publisher(user):
+    try:
+        return user.userprofile.pub
+    except UserProfile.DoesNotExist:
+        return None
 
 @login_required
 def index(request):
-    all_orders = Order.objects.all()
+    pub = get_user_publisher(request.user)
+    if pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+
+    all_orders = Order.objects.filter(pub=pub)
     return render(request, "supply/index.html", {'order_collection': all_orders})
 
 @login_required
 def order_new(request):
+    user = request.user
+    pub = get_user_publisher(user)
+    if pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+
     if request.method == 'POST':
         name_entry=request.POST.get('inputOrderName')
         company_entry=request.POST.get('inputCompany')
@@ -23,12 +40,11 @@ def order_new(request):
             order.name = name_entry
             order.company= company_entry
             order.status = 'DFT'
-            current_user = User.objects.get(pk=1)
-            order.creator = current_user
-            order.pub = current_user.pub 
+            order.creator = user.username
+            order.pub = pub 
             
             order.save();             
-            return HttpResponseRedirect(reverse('supply:inventory'))
+            return HttpResponseRedirect(reverse('supply:index'))
         else:
             err_invalid_new_order_input = 'invalid new order input'  
             return render(request, 'supply/order_new.html', {'errors':err_invalid_new_order_input, 'name':name_entry, 'company':company_entry})
@@ -37,9 +53,13 @@ def order_new(request):
 
 @login_required
 def order_edit(request, order_id):
-     
+    user_pub = get_user_publisher(request.user)
+    if user_pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
     order_to_edit = Order.objects.get(id=order_id)
-    
+    if user_pub != order_to_edit.pub:
+        return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
+
     if request.method == 'POST':
         name_entry=request.POST.get('inputOrderName')
         company_entry=request.POST.get('inputCompany')
@@ -169,3 +189,15 @@ def reports_sites(request):
 @login_required
 def report_detail(request, report_id):
     return render(request, "supply/report_detail.html", {})
+
+def error(request, type):
+    errors = { "permission" : { "title":"Permission Error",
+                             "msg":"Your are not authorized to access this information. Please check your request." },
+             }
+    try:
+        error = errors[type]
+    except KeyError:
+        error = { "title":"Operation Error",
+                  "msg":"Error in your operation." }
+    return render(request, "supply/error.html", {"error" : error })
+
