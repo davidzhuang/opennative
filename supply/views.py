@@ -7,6 +7,9 @@ from django import forms
 from supply.models import *
 from supply.forms import site_form
 
+#python library
+from datetime import datetime
+
 @login_required
 def index(request):
     all_orders = Order.objects.all()
@@ -87,7 +90,60 @@ def lines(request):
     
 @login_required
 def line_new(request, order_id):
-    return render(request, "supply/line_new.html", {})
+    if request.method == 'POST':
+        name_entry = request.POST.get('inputLineName')
+        platform_entry = request.POST.get('platform');
+        type_entry = request.POST.get('type')
+        adUnit_name_entry = request.POST.get('inventory')
+        
+        print request.POST
+        
+        AdUnit_list=[]
+        
+#        for item in request.POST.get('inventory')
+#            adUnit_list.append(item)     
+#           print item
+        
+        print 'name_entry: %s'%name_entry
+        print 'platform_entry: %s'%platform_entry
+        print 'type_entry: %s'%type_entry
+        print 'adUnit_name_entry: %s'%adUnit_name_entry
+
+        if ( name_entry and platform_entry and type_entry and adUnit_name_entry):
+			#lineItem table
+            new_line_item = LineItem()
+            new_line_item.name = name_entry
+            new_line_item.platform = platform_entry
+            new_line_item.order= Order.objects.get(id = order_id)
+            new_line_item.type = type_entry
+            
+            #non-mandatory attributes 
+            new_line_item.status = 'W'
+            new_line_item.start_date = datetime.today().isoformat()
+            new_line_item.start_time = datetime.now().time().isoformat()
+    end_date = models.DateField()
+    end_time = models.TimeField()
+            #retrieve selected adUnits            
+             
+            new_line_item.save(); 
+            
+            #lineItemAdUnit table
+#            for item in adUnit_list:
+#               new_line_item_adUnit = LineItemAdUnit()
+                
+#                new_line_item_adUnit.line = new_line_item
+#                new_line_item_adUnit.unit = item
+                
+#               new_line_item_adUnit.save() 
+                            
+            return HttpResponseRedirect(reverse('supply:inventory'))
+        else:
+            err_invalid_new_line_input = 'invalid new line input'  
+            return render(request, 'supply/line_new.html', {'errors':err_invalid_new_line_input, 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'inventory':adUnit_name_entry})
+    else:
+        all_AdUnit_list = AdUnit.objects.all()
+
+        return render(request, "supply/line_new.html", {'all_AdUnit_list':all_AdUnit_list})
 
 @login_required
 def line_edit(request, line_id):
