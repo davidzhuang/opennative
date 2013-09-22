@@ -45,8 +45,9 @@
                   <label for="inputPlatform" class="col-lg-2 control-label">Platform</label>
                   <div class="col-lg-10", name="inputPlatform">
                     <select class="form-control" name="platform">
-                      <option value="W" selected="selected">Web</option>
-                      <option value="M">Mobile</option>
+                      {% for choice in line_item.PLATFORM_TYPES %}
+                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -56,11 +57,9 @@
                   <label for="type" class="col-lg-2 control-label">Type</label>
                   <div class="col-lg-10">
                     <select class="form-control" name="type">
-                      <option value='XCL'>Exclusive</option>
-                      <option value='STD' selected="selected">Standard</option>
-                      <option value='NTW'>Network</option>
-                      <option value='BLK'>Bulk</option>
-                      <option value='HSE'>House</option>
+                      {% for choice in line_item.LINE_ITEM_TYPES %}
+                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>

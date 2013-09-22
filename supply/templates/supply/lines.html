@@ -40,7 +40,7 @@
                           </tr>
                           {% for line_item_entry in one_combined_entry.line_item_list %}
                               <tr>
-					            <td><a href="{% url 'supply:line_edit' line_item_entry.id %}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
+					            <td><a href="{% url 'supply:line_edit' line_item_entry.id %}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.get_platform_display}}</td><td>{{line_item_entry.get_type_display}}</td>
 				               </tr>
 				         {% endfor %}         
                     </table>

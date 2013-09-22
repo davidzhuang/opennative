@@ -115,6 +115,8 @@ def lines(request):
     
 @login_required
 def line_new(request, order_id):
+    #field.choice lookup in template
+    l= LineItem()
 
     errors = []
     adUnit_name_entry_list = AdUnit.objects.all()
@@ -180,14 +182,14 @@ def line_new(request, order_id):
                 adUnit_selected_list = adUnit_name_entry_list
                 adUnit_name_entry_list = AdUnit.objects.all()
              
-            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list})
+            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
     else:
         pub = get_user_publisher(request.user)
         if pub == None:
             return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
 
         adUnit_name_entry_list = AdUnit.objects.all()
-        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list})
+        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
 
 @login_required
 def line_edit(request, line_id):
