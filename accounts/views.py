@@ -22,3 +22,11 @@ def signin(request):
             return render(request, "accounts/signin.html", {'errors': 'Username/email and password do not match'})
     else:
         return render(request, "accounts/signin.html", {})
+
+def error(request, type):
+    errors = { "account" : { "title":"Account Error", 
+                             "msg":"Your account has no publisher information, please set up your publisher account before proceeding" },
+             }
+    error = errors[type]
+    return render(request, "accounts/error.html", {"error" : error })
+

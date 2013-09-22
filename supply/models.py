@@ -16,17 +16,6 @@ class Publisher(models.Model):
     def __unicode__(self):
         return self.name
 
-class User(models.Model):
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
-    email = models.CharField(max_length=64)
-    password = models.CharField(max_length=64)
-    phone = models.CharField(max_length=32, blank=True)
-    title = models.CharField(max_length=32, blank=True)
-    pub = models.ForeignKey(Publisher)
-    def __unicode__(self):
-        return self.first_name + ' ' +  self.last_name
-
 class Site(models.Model):
     name = models.CharField(max_length=64, unique=True)
     pub = models.ForeignKey(Publisher)
@@ -83,7 +72,7 @@ class Order(models.Model):
     )
     name = models.CharField(max_length=64)
     pub = models.ForeignKey(Publisher)
-    creator = models.ForeignKey(User)
+    creator = models.CharField(max_length=32)
     company = models.CharField(max_length=64)
     status = models.CharField(max_length=3, choices=ORDER_STATUS, default='DFT')
     def __unicode__(self):
@@ -145,18 +134,13 @@ class LineItem(models.Model):
     budget = models.FloatField(blank=True, default=0)
     deliver = models.CharField(max_length=1, choices=DELIVER_MODES, default=EVENLY)
     dlv_priority = models.PositiveSmallIntegerField()
+    adunits = models.ManyToManyField(AdUnit)
     def __unicode__(self):
         return self.name
-
-class LineItemAdUnit(models.Model):
-    line = models.ForeignKey(LineItem)
-    unit = models.ForeignKey(AdUnit)
-
 
 class CustomTarget(models.Model):
     line = models.ForeignKey(LineItem)
     kv = models.CharField(max_length=512)
-
 
 class GeoTarget(models.Model):
     line = models.ForeignKey(LineItem)

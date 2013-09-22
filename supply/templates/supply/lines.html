@@ -18,7 +18,7 @@
 <!---Block for menu list on left side --->
 {% block side_bar_block %}
               <li><a href="{% url 'supply:index' %}">Orders</a></li>
-              <li class="active"><a href="{% url 'supply:lines' %}">LineItems</a></li>
+              <li class="active"><a href="{% url 'supply:lines' %}">Line Items</a></li>
 {% endblock %}
 
 <!---Block for right pane --->
@@ -40,13 +40,13 @@
                           </tr>
                           {% for line_item_entry in one_combined_entry.line_item_list %}
                               <tr>
-					            <td><a href="{% url 'supply:line_edit' {{line_item_entry.id}}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
+					            <td><a href="{% url 'supply:line_edit' line_item_entry.id %}">{{line_item_entry.name}}</a></td><td>{{line_item_entry.platform}}</td><td>{{line_item_entry.type}}</td>
 				               </tr>
 				         {% endfor %}         
                     </table>
                 
   		          <form action="{% url 'supply:line_new' one_combined_entry.order.id %}">                      
-                    <button type="submit" class="btn btn-default">New LineItem</button> 
+                    <button type="submit" class="btn btn-default">New Line Item</button> 
                   </form>
                 </div>
               </div><!--/panel-->

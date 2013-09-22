@@ -37,4 +37,7 @@ urlpatterns = patterns('supply.views',
     url(r'^reports/sites$', 'reports_sites', name='reports_sites'),
     # ex: /supply/reports/1
     url(r'^reports/(?P<report_id>\d+)/$', 'report_detail', name='report_detail'),
+
+    # ex: /supply/error
+    url(r'^error/(?P<type>\w+)/$', 'error', name='error'),
 )
