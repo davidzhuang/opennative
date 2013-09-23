@@ -5,7 +5,7 @@
 
 <!---title block --->
 {% block page_title %}
-  <title>Sign In - Easy Native Ad Platform</title>
+  <title>Sign In - Open Native</title>
 {% endblock %}
 
   {% block page_file_links %}
@@ -15,6 +15,10 @@
 
   <!---Block for Navigation Bar on top of page --->
   {% block nav_bar_block %}
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="{% url 'accounts:signin' %}">Sign in</a></li>
+            <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
+          </ul>
   {% endblock %}
 
   {% block main_row_block %}

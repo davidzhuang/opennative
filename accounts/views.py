@@ -16,12 +16,21 @@ def signin(request):
                 return HttpResponseRedirect(reverse('supply:index'))
             else:
                 # Return a 'disabled account' error message
-                return render(request, "accounts/signin.html", {'errors': 'Disabled account, please re-activate, or use a different account'})
+                return render(request, "accounts/signin.html", {'errors': 'Disabled account, please re-activate the account, or use a different account'})
         else:
             # Return an 'invalid login' error message.
             return render(request, "accounts/signin.html", {'errors': 'Username/email and password do not match'})
     else:
         return render(request, "accounts/signin.html", {})
+
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+    else:
+        return render(request, "accounts/signup.html", {})
 
 def error(request, type):
     errors = { "account" : { "title":"Account Error", 

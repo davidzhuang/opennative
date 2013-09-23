@@ -9,7 +9,7 @@
     
     <!---title block --->
     {% block page_title %}
-    <title>Open Native Ad Platform</title>
+    <title>Open Native</title>
     {% endblock %}
 
     <!-- Bootstrap core CSS -->
@@ -41,8 +41,6 @@
         <div class="collapse navbar-collapse">
         <!---Block for Navigation Bar on top of page --->
         {% block nav_bar_block %}
-        {% endblock %}
-
           <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
             <li><a href="#">{{ user.get_username }}</a></li>
@@ -51,6 +49,7 @@
             <li><a href="{% url 'accounts:signin' %}">Sign in</a></li>
           {% endif %}
           </ul>
+        {% endblock %}
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->
     </div><!-- /.navbar -->
