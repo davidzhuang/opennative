@@ -41,6 +41,8 @@
         <div class="collapse navbar-collapse">
         <!---Block for Navigation Bar on top of page --->
         {% block nav_bar_block %}
+        {% endblock %}
+        {% block nav_bar_right_block %}
           <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
             <li><a href="#">{{ user.get_username }}</a></li>
