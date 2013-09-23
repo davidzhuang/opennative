@@ -126,15 +126,13 @@ def line_new(request, order_id):
         
         for key in request.POST.iterkeys():
             input_queryDict[key] = request.POST.getlist(key)
-
-        print input_queryDict
         
         name_entry = input_queryDict['inputLineName'][0]
         
         if not name_entry:
             errors.append('Name')
         
-        platform_entry = input_queryDict['platform'][0]
+        platform_entry = input_queryDict['inputPlatform'][0]
         
         if not platform_entry:
             errors.append('Platform')
@@ -171,6 +169,78 @@ def line_new(request, order_id):
             new_line_item.dlv_priority = 1
              
             new_line_item.save() 
+            
+            for item in adUnit_name_entry_list: 
+                new_line_item.adunits.add(item)
+                                         
+            return HttpResponseRedirect(reverse('supply:lines'))
+        else:
+            
+            adUnit_selected_list =[]
+
+            #mark previously selected items?            
+            if (len(adUnit_name_entry_list) >0):
+                adUnit_selected_list = adUnit_name_entry_list
+                adUnit_name_entry_list = AdUnit.objects.all()
+             
+            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':item_to_edit})
+    else:
+        pub = get_user_publisher(request.user)
+        if pub == None:
+            return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+
+        adUnit_name_entry_list = AdUnit.objects.all()
+        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':item_to_edit})
+
+@login_required
+def line_edit(request, line_id):
+
+    #user_pub = get_user_publisher(request.user)
+    #if user_pub == None:
+    #   return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+        
+    line_to_edit = LineItem.objects.get(id=line_id)
+    #if user_pub != order_to_edit.pub:
+    #    return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
+
+    change_flags = []
+    adUnit_name_entry_list = AdUnit.objects.all()
+    
+    if request.method == 'POST':        
+        input_queryDict = {}
+        
+        for key in request.POST.iterkeys():
+            input_queryDict[key] = request.POST.getlist(key)
+        
+        name_entry = input_queryDict['inputLineName'][0]
+        if name_entry:
+            change_flags.append('Name')
+        
+        platform_entry = input_queryDict['platform'][0]
+        if not platform_entry:
+            change_flags.append('Platform')
+            
+        type_entry = input_queryDict['type'][0]
+        if not type_entry:
+            change_flags.append('Type')
+        
+        #multiple choice, passed in as dictionary
+        if 'inventory' in input_queryDict:
+            adUnit_name_entry_list = input_queryDict['inventory']
+
+        else:
+            change_flags.append('Inventory')
+            
+        if len(change_flags)>0:
+            if 'Name' in change_flags:
+                line_to_edit.name = name_entry
+            if 'Platform' in change_flags:
+                line_to_edit.platform = platform_entry
+            if 'Type' in change_flags:    
+                line_to_edit.type = type_entry
+
+			#need to also take care of adunit addition and removal here            
+            line_to_edit.save() 
                                      
             return HttpResponseRedirect(reverse('supply:lines'))
         else:
@@ -182,18 +252,34 @@ def line_new(request, order_id):
                 adUnit_selected_list = adUnit_name_entry_list
                 adUnit_name_entry_list = AdUnit.objects.all()
              
-            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
+            return render(request, 'supply/line_edit.html', {'line_id': line_id, 'change_flags':'Changed these fileds: '+ str(change_flags), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
     else:
         pub = get_user_publisher(request.user)
         if pub == None:
             return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
 
         adUnit_name_entry_list = AdUnit.objects.all()
-        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
+        return render(request, 'supply/line_edit.html', {'line_id': line_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':line_to_edit})
 
-@login_required
-def line_edit(request, line_id):
-    return render(request, "supply/line_edit.html", {})
+
+
+
+
+
+
+                        
+           # order_to_edit.save();             
+            #return HttpResponseRedirect(reverse('supply:index'))
+        #else:
+         #   err_invalid_new_order_input = 'Invalid order editing'  
+          #  return render(request, 'supply/order_edit.html', {'change_flags':err_invalid_new_order_input, 'name':name_entry, 'company':company_entry})
+    #else:
+     #   return render(request, 'supply/order_edit.html', {'id':order_id, 'name':order_to_edit.name, 'company':order_to_edit.company})       
+    
+
+
+
+ #   return render(request, "supply/line_edit.html", {})
     
 @login_required
 def inventory(request):

@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-group">
                   <label for="inputPlatform" class="col-lg-2 control-label">Platform</label>
-                  <div class="col-lg-10", name="inputPlatform">
+                  <div class="col-lg-10", id="inputPlatform">
                     <select class="form-control" name="platform">
                       {% for choice in line_item.PLATFORM_TYPES %}
                       <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
