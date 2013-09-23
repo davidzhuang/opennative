@@ -18,12 +18,12 @@
  <!---Block for menu list on left side --->
 {% block side_bar_block %}
               <li><a href="{% url 'supply:index' %}">Orders</a></li>
-              <li class="active"><a href="{% url 'supply:lines' %}">LineItems</a></li>
+              <li class="active"><a href="{% url 'supply:lines' %}">Line Items</a></li>
 {% endblock %}
 
 <!---Block for right pane --->
 {% block right_pane_block %}
-          <form class="form-horizontal" role="form" action="{% url 'supply:line_edit' 1 %}" method="post">
+          <form class="form-horizontal" role="form" action="{% url 'supply:line_edit' line_id %}" method="post">
             {% csrf_token %}
 
             <div class="panel panel-default table-responsive">
@@ -34,16 +34,17 @@
                 <div class="form-group">
                   <label for="inputLineName" class="col-lg-2 control-label">Name</label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control" id="inputLineName" value="Sample Line Item Name">
+                    <input type="text" class="form-control" name="inputLineName" placeholder="Line Item Name">
                   </div>
                 </div>
+                
                 <div class="form-group">
                   <label for="inputPlatform" class="col-lg-2 control-label">Platform</label>
-
                   <div class="col-lg-10", id="inputPlatform">
                     <select class="form-control" name="platform">
-                      <option value="WEB">Web</option>
-                      <option value="MOBILE">Mobile</option>
+                      {% for choice in line_item.PLATFORM_TYPES %}
+                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -53,11 +54,9 @@
                   <label for="type" class="col-lg-2 control-label">Type</label>
                   <div class="col-lg-10">
                     <select class="form-control" name="type">
-                      <option value='XCL'>Exclusive</option>
-                      <option value='STD' selected="selected">Standard</option>
-                      <option value='NTW'>Network</option>
-                      <option value='BLK'>Bulk</option>
-                      <option value='HSE'>House</option>
+                      {% for choice in line_item.LINE_ITEM_TYPES %}
+                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -67,11 +66,9 @@
                   <label for="inventory" class="col-lg-2 control-label">Inventory</label>
                   <div class="col-lg-10">
                     <select multiple size="10" class="form-control" name="inventory">
-                      <option value='1'>AdUnit 1</option>
-                      <option value='2'>AdUnit 2</option>
-                      <option value='3'>AdUnit 3</option>
-                      <option value='4'>AdUnit 4</option>
-                      <option value='5'>AdUnit 5</option>
+                      {% for adUnit in adUnit_name_entry_list %}
+                      <option value='{{adUnit}}'>{{adUnit.name}}</option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
