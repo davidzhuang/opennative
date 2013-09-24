@@ -1,0 +1,33 @@
+<!---Inherits frame.html --->
+{% extends "accounts/frame.html" %}
+
+{% load staticfiles %}
+
+<!---title block --->
+{% block page_title %}
+  <title>Sign Up Completed - Open Native</title>
+{% endblock %}
+
+  {% block page_file_links %}
+    <!-- Custom styles for this template -->
+    <link href="{% static 'accounts/css/signin.css' %}" rel="stylesheet">
+  {% endblock %}
+
+  <!---Block for Navigation Bar on top of page --->
+  {% block nav_bar_block %}
+  {% endblock %}
+
+  {% block main_row_block %}
+    <div class="container">
+
+      <div class="jumbotron">
+        <h3>Welcome to Open Native</h3>
+        <p>You have signed up to Open Native. Please proceed to sign in:</p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'accounts:signin' %}">Sign in &raquo;</a>
+        </p>
+      </div>
+
+    </div> <!-- /container -->
+
+  {% endblock %}

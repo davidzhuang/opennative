@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
+from django.db import IntegrityError
+import re
 from supply.models import Publisher
 from accounts.models import UserProfile
-import re
 
 class FormErrors:
     pass
@@ -93,10 +94,20 @@ def signup(request):
             return render(request, "accounts/signup.html", {'errors' : errors, })
 
         # save user info
-        user = User.objects.create_user(username, email, password)
+        try:
+            user = User.objects.create_user(username, email, password)
+        except IntegrityError:
+            errors.username = "This username is already in use, please pick a different username"
+            return render(request, "accounts/signup.html", {'errors' : errors, })
+
         user.first_name = request.POST['firstname']
         user.last_name = lastname
-        user.save()
+        try:
+            user.save()
+        except IntegrityError:
+            errors.username = "This username is already in use, please pick a different username"
+            return render(request, "accounts/signup.html", {'errors' : errors, })
+
 
         pub = Publisher()
         pub.name = companyname
@@ -108,18 +119,24 @@ def signup(request):
         pub.province = strip_tags(request.POST['province'])
         pub.zipcode = strip_tags(request.POST['zipcode'])
         pub.country = strip_tags(request.POST['country'])
-        pub.save()
+        try:
+            pub.save()
+        except IntegrityError:
+            errors.companyname = "This company name is already in use, please use a different company name, or contact us to claim your company name"
+            return render(request, "accounts/signup.html", {'errors' : errors, })
 
         profile = UserProfile()
         profile.user = user;
         profile.pub = pub;
         profile.save()
 
-        login(request, user)
-        return HttpResponseRedirect(reverse('supply:inventory'))
-
+        # tell user he's signed up and ask him to sign in
+        return HttpResponseRedirect(reverse('accounts:signup_done'))
     else:
         return render(request, "accounts/signup.html", {})
+
+def signup_done(request):
+    return render(request, "accounts/signup_done.html", {})
 
 def error(request, type):
     errors = { "account" : { "title":"Account Error", 
