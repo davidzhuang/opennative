@@ -28,12 +28,6 @@
         {% csrf_token %}
         <h2 class="form-signup-heading">Get Started with Open Native</h2>
 
-        {% if errors %}
-            <p style="color: red;">
-                {{errors}}
-            </p>
-        {% endif %}
-
         <fieldset>
           <div id="legend">
             <legend class="">User Informatrion</legend>
@@ -44,6 +38,9 @@
             <label class="col-xs-2 control-label"  for="username">Username*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="text" id="username" name="username" placeholder="Username" class="form-control">
+              {% if errors.username %}
+                <p style="color: red;">{{errors.username}}</p>
+              {% endif %}
               <p class="help-block">Username can contain letters or numbers</p>
             </div>
           </div>
@@ -52,7 +49,10 @@
             <!-- Email -->
             <label class="col-xs-2 control-label" for="email">Email*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
-              <input type="text" id="email" name="email" placeholder="Email" class="form-control">
+              <input type="email" id="email" name="email" placeholder="Email" class="form-control">
+              {% if errors.email %}
+                <p style="color: red;">{{errors.email}}</p>
+              {% endif %}
             </div>
           </div>
  
@@ -61,15 +61,21 @@
             <label class="col-xs-2 control-label" for="password">Password*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="password" id="password" name="password" placeholder="" class="form-control">
+              {% if errors.password %}
+                <p style="color: red;">{{errors.password}}</p>
+              {% endif %}
               <p class="help-block">At least: 8 characters, 1 upper case, 1 number</p>
             </div>
           </div>
  
           <div class="form-group">
-            <!-- Password -->
+            <!-- Password Confirm -->
             <label class="col-xs-2 control-label"  for="password_confirm">Password (Confirm)*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="form-control">
+              {% if errors.password_confirm %}
+                <p style="color: red;">{{errors.password_confirm}}</p>
+              {% endif %}
             </div>
           </div>
  
@@ -86,6 +92,9 @@
             <label class="col-xs-2 control-label" for="lastname">Last Name*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="text" id="lastname" name="lastname" placeholder="Last Name" class="form-control">
+              {% if errors.lastname %}
+                <p style="color: red;">{{errors.lastname}}</p>
+              {% endif %}
             </div>
           </div>
         </fieldset>
@@ -100,6 +109,9 @@
             <label class="col-xs-2 control-label"  for="companyname">Company Name*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="text" id="companyname" name="companyname" placeholder="Company Name" class="form-control">
+              {% if errors.companyname %}
+                <p style="color: red;">{{errors.companyname}}</p>
+              {% endif %}
             </div>
           </div>
 
@@ -108,6 +120,9 @@
             <label class="col-xs-2 control-label"  for="phone">Phone Number*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="text" id="phone" name="phone" placeholder="(650) 123-4567" class="form-control">
+              {% if errors.phone %}
+                <p style="color: red;">{{errors.phone}}</p>
+              {% endif %}
             </div>
           </div>
 
@@ -206,9 +221,9 @@
 
           <div class="form-group">
             <!-- Postal Code -->
-            <label class="col-xs-2 control-label"  for="postalcode">Postal Code</label>
+            <label class="col-xs-2 control-label"  for="zipcode">Postal Code</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
-              <input type="text" name="postalcode" placeholder="Postal Code" class="form-control">
+              <input type="text" name="zipcode" placeholder="Postal Code" class="form-control">
             </div>
           </div>
 

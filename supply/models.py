@@ -4,13 +4,13 @@ from django.db.models.signals import post_save
 class Publisher(models.Model):
     name = models.CharField(max_length=64, unique=True)
     url = models.CharField(max_length=64, blank=True)
-    address = models.CharField(max_length=64)
+    address = models.CharField(max_length=64, blank=True)
     address2 = models.CharField(max_length=64, blank=True)
-    city = models.CharField(max_length=32)
+    city = models.CharField(max_length=32, blank=True)
     state = models.CharField(max_length=32, blank=True)
     zipcode = models.CharField(max_length=32, blank=True)
     province = models.CharField(max_length=64, blank=True)
-    country = models.CharField(max_length=64)
+    country = models.CharField(max_length=64, blank=True)
     phone = models.CharField(max_length=32)
     phone2 = models.CharField(max_length=32, blank=True)
     def __unicode__(self):

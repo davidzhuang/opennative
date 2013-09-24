@@ -27,9 +27,9 @@
       <form class="form-signin" action=""  method="POST">
         {% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
-        {% if errors %}
+        {% if error %}
             <p style="color: red;">
-                {{errors}}
+                {{error}}
             </p>
         {% endif %}
         <input type="text" class="form-control" name="username" placeholder="Username or Email" autofocus>
