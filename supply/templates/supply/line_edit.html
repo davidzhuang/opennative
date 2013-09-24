@@ -65,11 +65,17 @@
                 <div class="form-group">
                   <label for="inventory" class="col-lg-2 control-label">Inventory</label>
                   <div class="col-lg-10">
-                    <select multiple size="10" class="form-control" name="inventory">
-                      {% for adUnit in adUnit_name_entry_list %}
-                      <option value='{{adUnit}}'>{{adUnit.name}}</option>
-                      {% endfor %}
-                    </select>
+                    {% for adUnit in adUnit_name_entry_list %}
+                    <label class="checkbox">
+                      <input type="checkbox" value="{{adUnit.id}}">{{adUnit.name}}
+                    </label>
+                    {% endfor %}
+                    <label class="checkbox">
+                      <input type="checkbox" value="1" checked>Ad Unit 1
+                    </label>
+                    <label class="checkbox">
+                      <input type="checkbox" value="2">Ad Unit 2
+                    </label>
                   </div>
                 </div>
 
