@@ -20,6 +20,7 @@ def get_user_publisher(user):
 
 @login_required
 def index(request):
+
     pub = get_user_publisher(request.user)
     if pub == None:
         return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
@@ -82,18 +83,23 @@ def order_edit(request, order_id):
     
 @login_required
 def lines(request):
-#   pub = get_user_publisher(request.user)
-#  if pub == None:
-#        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+    pub = get_user_publisher(request.user)
+    if pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
 
+    print 'lines: publiser is %s'%pub
+    
     class all_lines_by_order:
         line_item_list = []
         one_order = None   
-    
+        
     all_orders_with_line_items = []
-
-    all_order_items = Order.objects.all()
-    all_line_items = LineItem.objects.all()
+    all_line_items =[]
+    
+    all_order_items = Order.objects.filter(pub=pub)
+    for item in all_order_items:
+        all_line_items +=  LineItem.objects.filter(order=item)
+        print 'all line items after this iteration" %s'%all_line_items
     
     for order in all_order_items:
         line_item_list = []
@@ -115,6 +121,10 @@ def lines(request):
     
 @login_required
 def line_new(request, order_id):
+    pub = get_user_publisher(request.user)
+    if pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+
     #field.choice lookup in template
     l= LineItem()
 
@@ -194,14 +204,14 @@ def line_new(request, order_id):
 
 @login_required
 def line_edit(request, line_id):
+    user_pub = get_user_publisher(request.user)
+    if user_pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
 
-    #user_pub = get_user_publisher(request.user)
-    #if user_pub == None:
-    #   return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-        
     line_to_edit = LineItem.objects.get(id=line_id)
-    #if user_pub != order_to_edit.pub:
-    #    return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
+
+    if user_pub != line_to_edit.order.pub:
+        return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
 
     change_flags = []
     adUnit_name_entry_list = AdUnit.objects.all()
@@ -260,26 +270,6 @@ def line_edit(request, line_id):
 
         adUnit_name_entry_list = AdUnit.objects.all()
         return render(request, 'supply/line_edit.html', {'line_id': line_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':line_to_edit})
-
-
-
-
-
-
-
-                        
-           # order_to_edit.save();             
-            #return HttpResponseRedirect(reverse('supply:index'))
-        #else:
-         #   err_invalid_new_order_input = 'Invalid order editing'  
-          #  return render(request, 'supply/order_edit.html', {'change_flags':err_invalid_new_order_input, 'name':name_entry, 'company':company_entry})
-    #else:
-     #   return render(request, 'supply/order_edit.html', {'id':order_id, 'name':order_to_edit.name, 'company':order_to_edit.company})       
-    
-
-
-
- #   return render(request, "supply/line_edit.html", {})
     
 @login_required
 def inventory(request):
@@ -293,6 +283,9 @@ def inventory(request):
 
 @login_required
 def site_new(request):
+    pub = get_user_publisher(request.user)
+    if pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
 
     if request.method == 'POST':
         
@@ -319,11 +312,17 @@ def site_new(request):
         
 @login_required
 def site_edit(request, site_id):  
+    user_pub = get_user_publisher(request.user)
+    if user_pub == None:
+        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
       
     site_to_edit = Site.objects.get(id=site_id)
 
-    if request.method == 'POST':
+    if user_pub != site_to_edit.pub:
+        return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
 
+    if request.method == 'POST':
+    
         form = site_form(request.POST)
         
         if form.is_valid():
