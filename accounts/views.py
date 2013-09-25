@@ -5,12 +5,31 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.html import strip_tags
+from django.db import IntegrityError
+from django import forms
+import re
 from supply.models import Publisher
 from accounts.models import UserProfile
-import re
 
 class FormErrors:
     pass
+
+class SignupForm(forms.Form):
+    username = forms.CharField(max_length=30)
+    email = forms.CharField(max_length=75)
+    password = forms.CharField(max_length=60)
+    password_confirm = forms.CharField(max_length=60)
+    firstname = forms.CharField(max_length=30, required=False)
+    lastname = forms.CharField(max_length=30)
+    companyname = forms.CharField(max_length=64)
+    phone = forms.CharField(max_length=32)
+    address = forms.CharField(max_length=64, required=False)
+    address2 = forms.CharField(max_length=64, required=False)
+    city = forms.CharField(max_length=32, required=False)
+    state = forms.CharField(max_length=32, required=False)
+    zipcode = forms.CharField(max_length=32, required=False)
+    province = forms.CharField(max_length=64, required=False)
+    country = forms.CharField(max_length=64, required=False)
 
 def signin(request):
     logout(request)
@@ -33,31 +52,22 @@ def signin(request):
 
 def signup(request):
     if request.method == 'POST':
-        # first, get all required fields
-        username = strip_tags(request.POST['username'].strip())
-        email = strip_tags(request.POST['email'].strip())
-        password = request.POST['password']
-        password_confirm = request.POST['password_confirm']
-        lastname = strip_tags(request.POST['lastname'].strip())
-        companyname = strip_tags(request.POST['companyname'].strip())
-        phone = strip_tags(request.POST['phone'].strip())
+        form = SignupForm(request.POST)
 
-        # validate all required fields
+        # form will validate basic rules
+        if not form.is_valid():
+            return render(request, "accounts/signup.html", {'form' : form, })
+
+        # we also need to validate advanced rules here
         errors = FormErrors()
         has_error = False
 
-        if not username:
-            errors.username = "This is a required field"
-            has_error = True
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password']
+        password_confirm = form.cleaned_data['password_confirm']
 
-        if not email:
-            errors.email = "This is a required field"
-            has_error = True
-
-        if not password:
-            errors.password = "This is a required field"
-            has_error = True
-        elif len(password) < 8:
+        if len(password) < 8:
             errors.password = "Password too short"
             has_error = True
         elif re.search(r'\d', password) == None:
@@ -70,56 +80,56 @@ def signup(request):
             errors.password = "Password must contain at least 1 lower case letter"
             has_error = True
 
-        if not password_confirm:
-            errors.password_confirm = "This is a required field"
-            has_error = True
-        elif password_confirm != password:
+        if password_confirm != password:
             errors.password_confirm = "Passwords do not match"
             has_error = True
 
-        if not lastname:
-            errors.lastname = "This is a required field"
-            has_error = True
-
-        if not companyname:
-            errors.companyname = "This is a required field"
-            has_error = True
-
-        if not phone:
-            errors.phone = "This is a required field"
-            has_error = True
-
         if has_error:
-            return render(request, "accounts/signup.html", {'errors' : errors, })
+            return render(request, "accounts/signup.html", {'form' : form, 'errors' : errors, })
 
         # save user info
-        user = User.objects.create_user(username, email, password)
+        try:
+            user = User.objects.create_user(username, email, password)
+        except IntegrityError:
+            errors.username = "This username is already in use, please pick a different username"
+            return render(request, "accounts/signup.html", {'form' : form, 'errors' : errors, })
+
         user.first_name = request.POST['firstname']
-        user.last_name = lastname
-        user.save()
+        user.last_name = form.cleaned_data['lastname']
+        try:
+            user.save()
+        except IntegrityError:
+            errors.username = "This username is already in use, please pick a different username"
+            return render(request, "accounts/signup.html", {'form' : form, 'errors' : errors, })
 
         pub = Publisher()
-        pub.name = companyname
-        pub.phone = phone
-        pub.address = strip_tags(request.POST['address'])
-        pub.address2 = strip_tags(request.POST['address2'])
-        pub.city = strip_tags(request.POST['city'])
-        pub.state = strip_tags(request.POST['state'])
-        pub.province = strip_tags(request.POST['province'])
-        pub.zipcode = strip_tags(request.POST['zipcode'])
-        pub.country = strip_tags(request.POST['country'])
-        pub.save()
+        pub.name = form.cleaned_data['companyname']
+        pub.phone = form.cleaned_data['phone']
+        pub.address = form.cleaned_data['address']
+        pub.address2 = form.cleaned_data['address2']
+        pub.city = form.cleaned_data['city']
+        pub.state = form.cleaned_data['state']
+        pub.province = form.cleaned_data['province']
+        pub.zipcode = form.cleaned_data['zipcode']
+        pub.country = form.cleaned_data['country']
+        try:
+            pub.save()
+        except IntegrityError:
+            errors.companyname = "This company name is already in use, please use a different company name, or contact us to claim your company name"
+            return render(request, "accounts/signup.html", {'form' : form, 'errors' : errors, })
 
         profile = UserProfile()
         profile.user = user;
         profile.pub = pub;
         profile.save()
 
-        login(request, user)
-        return HttpResponseRedirect(reverse('supply:inventory'))
-
+        # tell user he's signed up and ask him to sign in
+        return HttpResponseRedirect(reverse('accounts:signup_done'))
     else:
         return render(request, "accounts/signup.html", {})
+
+def signup_done(request):
+    return render(request, "accounts/signup_done.html", {})
 
 def error(request, type):
     errors = { "account" : { "title":"Account Error", 
