@@ -30,6 +30,7 @@ class LineItemAdmin(admin.ModelAdmin):
         ('Schedule', {'fields':['start_date', 'start_time', 'end_date', 'end_time']}),
         ('Settings', {'fields':['type', 'priority', 'percentage', 'price', 'quantity', 'goal', 'budget']}),
         ('Delivery', {'fields':['deliver', 'dlv_priority']}),
+        ('AdUnits', {'fields':['adunits']}),
     ]
     inlines = [CustomTargetInline, GeoTargetInline, CreativeInline]
     list_display = ('name', 'platform', 'type')
