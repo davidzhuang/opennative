@@ -28,45 +28,45 @@
               <h3 class="panel-title">Edit ad unit</h3>
             </div>
             <div class="panel-body">                        
-              <form class="form-horizontal" role="form" action="{% url 'supply:adunit_edit' 11 %}" method="post">
+              <form class="form-horizontal" role="form" action="{% url 'supply:adunit_edit' adunit_id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="name" class="col-lg-2 control-label">Name</label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control" name="name" value="Sample AdUnit Name">
+                    <input type="text" class="form-control" name="name" placeholder="Sample AdUnit Name" value="{{ad_unit.name}}">
                   </div>
                 </div>
+                
                 <div class="form-group">
                   <label for="type" class="col-lg-2 control-label">Type</label>
                   <div class="col-lg-10">
-                    <select class="form-control" name="type">
-                      <option value="STD">Standard Display</option>
-                      <option value="ISP" selected="selected">Native - In-Stream Short Post</option>
-                      <option value="IIMG">Native - In-Stream Image</option>
-                      <option value="IVID">Native - In-Stream Video</option>
-                      <option value="LP">Long Post</option>
+                    <select class="form-control" name="type" value="{{ad_unit.type}}">                    
+                      {% for choice in ad_unit.AD_TYPES %}
+                        <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="type" class="col-lg-2 control-label">Target Window</label>
                   <div class="col-lg-10">
-                    <select class="form-control" name="target">
-                      <option value="_top" selected="selected">_top: Same Window</option>
-                      <option value="_blank">_blank: New Window</option>
+                    <select class="form-control" name="target" value="{{ad_unit.targetwindow}}">
+                      {% for choice in ad_unit.TARGET_WINDOW %}
+                        <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="size" class="col-lg-2 control-label">Size</label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control" name="size" value="300x250">
+                    <input type="text" class="form-control" name="size" value="{{ad_unit.sizes}}">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="desc" class="col-lg-2 control-label">Description</label>
                   <div class="col-lg-10">
-                    <textarea class="form-control" rows="4" name="desc" value="Ad unit for native in-stream ads"></textarea>
+                    <textarea class="form-control" rows="4" name="desc" placeholder="Ad unit for native in-stream ads" value="{{ad_unit.desc}}"></textarea>
                   </div>
                 </div>
                 <div class="form-group">

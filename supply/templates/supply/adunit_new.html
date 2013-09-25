@@ -25,10 +25,10 @@
 {% block right_pane_block %} 
           <div class="panel panel-default table-responsive">
             <div class="panel-heading">
-              <h3 class="panel-title">New ad unit</h3>
+              <h3 class="panel-title">New Ad Unit</h3>
             </div>
             <div class="panel-body">                        
-              <form class="form-horizontal" role="form" action="{% url 'supply:adunit_new' 1 %}" method="post">
+              <form class="form-horizontal" role="form" action="{% url 'supply:adunit_new' site_id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="name" class="col-lg-2 control-label">Name</label>
@@ -39,12 +39,10 @@
                 <div class="form-group">
                   <label for="type" class="col-lg-2 control-label">Type</label>
                   <div class="col-lg-10">
-                    <select class="form-control" name="type">
-                      <option value="STD">Standard Display</option>
-                      <option value="ISP" selected="selected">Native - In-Stream Short Post</option>
-                      <option value="IIMG">Native - In-Stream Image</option>
-                      <option value="IVID">Native - In-Stream Video</option>
-                      <option value="LP">Long Post</option>
+                    <select class="form-control" name="type">                    
+                      {% for choice in ad_unit.AD_TYPES %}
+                        <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -52,8 +50,9 @@
                   <label for="type" class="col-lg-2 control-label">Target Window</label>
                   <div class="col-lg-10">
                     <select class="form-control" name="target">
-                      <option value="_top" selected="selected">_top: Same Window</option>
-                      <option value="_blank">_blank: New Window</option>
+                      {% for choice in ad_unit.TARGET_WINDOW %}
+                        <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
