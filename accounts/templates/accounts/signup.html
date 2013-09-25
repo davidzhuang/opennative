@@ -37,7 +37,14 @@
             <!-- Username -->
             <label class="col-xs-2 control-label"  for="username">Username*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
-              <input type="text" id="username" name="username" placeholder="Username" class="form-control">
+              {% if form.username.value %}
+                <input type="text" id="username" name="username" value="{{form.username.value}}" class="form-control">
+              {% else %}
+                <input type="text" id="username" name="username" placeholder="Username" class="form-control">
+              {% endif %}
+              {% for error in form.username.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
               {% if errors.username %}
                 <p style="color: red;">{{errors.username}}</p>
               {% endif %}
@@ -49,7 +56,14 @@
             <!-- Email -->
             <label class="col-xs-2 control-label" for="email">Email*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.email.value %}
+              <input type="email" id="email" name="email" value="{{form.email.value}}" class="form-control">
+              {% else %}
               <input type="email" id="email" name="email" placeholder="Email" class="form-control">
+              {% endif %}
+              {% for error in form.email.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
               {% if errors.email %}
                 <p style="color: red;">{{errors.email}}</p>
               {% endif %}
@@ -61,6 +75,9 @@
             <label class="col-xs-2 control-label" for="password">Password*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="password" id="password" name="password" placeholder="" class="form-control">
+              {% for error in form.password.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
               {% if errors.password %}
                 <p style="color: red;">{{errors.password}}</p>
               {% endif %}
@@ -73,6 +90,9 @@
             <label class="col-xs-2 control-label"  for="password_confirm">Password (Confirm)*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
               <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="form-control">
+              {% for error in form.password_confirm.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
               {% if errors.password_confirm %}
                 <p style="color: red;">{{errors.password_confirm}}</p>
               {% endif %}
@@ -83,7 +103,11 @@
             <!-- First Name -->
             <label class="col-xs-2 control-label" for="firstname">First Name</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.firstname.value %}
+              <input type="text" id="firstname" name="firstname" value="{{form.firstname.value}}" class="form-control">
+              {% else %}
               <input type="text" id="firstname" name="firstname" placeholder="First Name" class="form-control">
+              {% endif %}
             </div>
           </div>
  
@@ -91,10 +115,14 @@
             <!-- Last Name -->
             <label class="col-xs-2 control-label" for="lastname">Last Name*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.lastname.value %}
+              <input type="text" id="lastname" name="lastname" value="{{form.lastname.value}}" class="form-control">
+              {% else %}
               <input type="text" id="lastname" name="lastname" placeholder="Last Name" class="form-control">
-              {% if errors.lastname %}
-                <p style="color: red;">{{errors.lastname}}</p>
               {% endif %}
+              {% for error in form.lastname.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
             </div>
           </div>
         </fieldset>
@@ -108,7 +136,14 @@
             <!-- Company Name -->
             <label class="col-xs-2 control-label"  for="companyname">Company Name*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.companyname.value %}
+              <input type="text" id="companyname" name="companyname" value="{{form.companyname.value}}" class="form-control">
+              {% else %}
               <input type="text" id="companyname" name="companyname" placeholder="Company Name" class="form-control">
+              {% endif %}
+              {% for error in form.companyname.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
               {% if errors.companyname %}
                 <p style="color: red;">{{errors.companyname}}</p>
               {% endif %}
@@ -119,10 +154,14 @@
             <!-- Phone Number -->
             <label class="col-xs-2 control-label"  for="phone">Phone Number*</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.phone.value %}
+              <input type="text" id="phone" name="phone" value="{{form.phone.value}}" class="form-control">
+              {% else %}
               <input type="text" id="phone" name="phone" placeholder="(650) 123-4567" class="form-control">
-              {% if errors.phone %}
-                <p style="color: red;">{{errors.phone}}</p>
               {% endif %}
+              {% for error in form.phone.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
             </div>
           </div>
 
@@ -130,7 +169,11 @@
             <!-- Address -->
             <label class="col-xs-2 control-label"  for="address">Address</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.address.value %}
+              <input type="text" id="address" name="address" value="{{form.address.value}}" class="form-control">
+              {% else %}
               <input type="text" id="address" name="address" placeholder="Address" class="form-control">
+              {% endif %}
             </div>
           </div>
 
@@ -138,7 +181,11 @@
             <!-- Address 2 -->
             <label class="col-xs-2 control-label"  for="address2">Address 2</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.address2.value %}
+              <input type="text" id="address2" name="address2" value="{{form.address2.value}}" class="form-control">
+              {% else %}
               <input type="text" id="address2" name="address2" class="form-control">
+              {% endif %}
             </div>
           </div>
 
@@ -146,7 +193,11 @@
             <!-- City -->
             <label class="col-xs-2 control-label"  for="city">City</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.city.value %}
+              <input type="text" name="city" value="{{form.city.value}}" class="form-control">
+              {% else %}
               <input type="text" name="city" placeholder="City" class="form-control">
+              {% endif %}
             </div>
           </div>
 
@@ -215,15 +266,23 @@
             <!-- Province -->
             <label class="col-xs-2 control-label"  for="province">Province</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
+              {% if form.province.value %}
+              <input type="text" name="province" value="{{form.province.value}}" class="form-control">
+              {% else %}
               <input type="text" name="province" placeholder="Province" class="form-control">
+              {% endif %}
             </div>
           </div>
 
           <div class="form-group">
-            <!-- Postal Code -->
-            <label class="col-xs-2 control-label"  for="zipcode">Postal Code</label>
+            <!-- Zipcode -->
+            <label class="col-xs-2 control-label" for="zipcode">Zipcode</label>
             <div class="col-xs-10 col-sm-6 col-lg-4">
-              <input type="text" name="zipcode" placeholder="Postal Code" class="form-control">
+              {% if form.zipcode.value %}
+              <input type="text" name="zipcode" value="{{form.zipcode.value}}" class="form-control">
+              {% else %}
+              <input type="text" name="zipcode" placeholder="Zipcode" class="form-control">
+              {% endif %}
             </div>
           </div>
 
