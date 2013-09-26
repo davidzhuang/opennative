@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand, CommandError
-from supply.models import User
 
 class Command(BaseCommand):
     args = 'instance1 instances2'
@@ -9,7 +8,6 @@ class Command(BaseCommand):
         self.stdout.write("args: ")
         for arg in args:
             print arg
-            #self.stdout.write(arg, ", ")
 
         self.stdout.write("\noptions: ")
         keys = options.keys()
