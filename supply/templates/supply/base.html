@@ -32,10 +32,17 @@
         {% block right_pane_block %} 
 
         {% endblock %}
+        
+        <!---Block for second right pane, to accommodate new_line in new_order window --->        
+        {% block right_pane_block_2 %} 
+
+        {% endblock %}
         </div><!--/span-->
       </div><!--/row-->
     </div><!--/.container-->
-    {% endblock %}
+    {% endblock %} <!-- end Main row block (between header and footer) -->
+
+
 
     <!---Block for page end file links --->        
     {% block page_end_file_links %}
