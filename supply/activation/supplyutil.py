@@ -8,8 +8,8 @@ class SupplyUtil:
         # arguments: r : redis.StrictRedis
         #            unit : AdUnit
 
-        key = ''.join(['unit:', unit.name])
+        key = ''.join(['unit:', str(unit.id)])
         value = ''.join(['{"site":"', str(unit.site.id), '","type":"', unit.type, '","target":"', unit.targetwindow, '"}'])
         #print "pub: ", unit.site.pub
-        print 'key: ', key, ', value: ', value
+        print 'zadd: key: ', key, ', score: 0, value: ', value
         r.zadd(key, 0, value)

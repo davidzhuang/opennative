@@ -1,5 +1,5 @@
 import sys
-from supply.models import LineItem, LineItemAdUnit
+from supply.models import LineItem
 from supply.models import Creative, CustomTarget, GeoTarget
 
 # classes used: AdUnit
@@ -35,7 +35,7 @@ class DemandUtil:
                     first = False
             crtv_str += ']'
             value = ''.join(['{"crtv":', crtv_str, ',"deliver":"', ln.deliver, '"}'])
-            sys.stdout.write('key: %s, value: %s\n' %(key, value))
+            sys.stdout.write('set: key: %s, value: %s\n' %(key, value))
             r.set(key, value)
 
 
@@ -44,12 +44,13 @@ class DemandUtil:
     #            u : AdUnit
     @staticmethod
     def pushUnitToLineIndex(r, u):
-        key = ''.join(['unit:', u.name])
-        unitlines = LineItemAdUnit.objects.filter(unit=u.id)
-        for unitline in unitlines:
-            line = LineItem.objects.get(id=unitline.line.id)
+        key = ''.join(['unit:', str(u.id)])
+        #unitlines = LineItemAdUnit.objects.filter(unit=u.id)
+        unitlines = u.lineitem_set.all()
+        for line in unitlines:
+            #line = LineItem.objects.get(id=unitline.id)
             score = line.dlv_priority
             value = str(line.id)
-            sys.stdout.write('key: %s, score: %d, value: %s\n' %(key, score, value))
+            sys.stdout.write('zadd: key: %s, score: %d, value: %s\n' %(key, score, value))
             r.zadd(key, score, value)
 

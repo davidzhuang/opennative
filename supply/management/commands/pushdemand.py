@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
-from supply.models import Order, LineItem, AdUnit
-from supply.models import Creative, CustomTarget, GeoTarget
-from supply.models import LineItemAdUnit
+from supply.models import LineItem, AdUnit
+#from supply.models import Creative, CustomTarget, GeoTarget
 from supply.activation.demandutil import DemandUtil
 import redis
 
