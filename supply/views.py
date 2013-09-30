@@ -34,26 +34,107 @@ def order_new(request):
     pub = get_user_publisher(user)
     if pub == None:
         return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
-    if request.method == 'POST':
-        name_entry=request.POST.get('inputOrderName')
-        company_entry=request.POST.get('inputCompany')
-
-        if ( name_entry and company_entry):
+        
+    class adUnit_by_site:
+        site_with_adUnit = None
+        entire_adUnit_list = []
+      
+    new_line_item= LineItem()
+      
+    errors = []
+    adUnit_selected_list =[] #retrieved from POST
+    
+    adUnit_by_site_list = []  #generated for both GET and POST from database
+        
+    #field.choice lookup in template
+    new_line_item= LineItem()
+            
+    current_site_list = Site.objects.filter(pub=pub)
+    all_orders = Order.objects.filter(pub=pub)
+    
+    for item in current_site_list:
+        element = adUnit_by_site()        
+        if (len(AdUnit.objects.filter(site=item)) > 0):
+            element.site_with_adUnit = item
+            element.entire_adUnit_list = AdUnit.objects.filter(site=item)
+            adUnit_by_site_list.append(element)
+ 
+    if request.method == 'POST':   
+        order_name_entry=request.POST.get('inputOrderName')
+        order_company_entry=request.POST.get('inputCompany')
+        line_name_entry = request.POST['inputLineName'] 
+        line_platform_entry = request.POST['inputPlatform']
+        line_type_entry = request.POST['type']
+        
+        if not order_name_entry:
+            errors.append('inputOrderName')
+        if not order_company_entry:
+            errors.append('inputCompany') 
+        if not line_name_entry:
+            errors.append('Line Item Name')
+        if not line_platform_entry:
+            errors.append('Line Item Platform')        
+        if not line_type_entry:
+            errors.append('Line Item Type')
+        
+        inventory_queryDict = []
+        
+        inventory_queryDict = request.POST.getlist('inventory')
+        if (len(inventory_queryDict) > 0 ):
+            for id in inventory_queryDict:#received adunit.id from POST, convert to object
+                adUnit_selected_list.append(AdUnit.objects.get(pk=id)) 
+        else:
+            errors.append('Inventory')
+                     
+        # create order 
+        if ( len(errors) == 0 ):
+                    
             order = Order()
-            order.name = name_entry
-            order.company= company_entry
+            order.pub = pub 
+            order.name = order_name_entry
+            order.company= order_company_entry
             order.status = 'DFT'
             order.creator = user.username
-            order.pub = pub 
+             
+        #create new line                                
+            new_line_item.name = line_name_entry
+            new_line_item.platform = line_platform_entry
+            new_line_item.type = line_type_entry
             
-            order.save();             
+            #non-mandatory attributes 
+            new_line_item.status = 'DFT'            
+            #hardcoded date/time for testing purposes
+            new_line_item.start_date = str(date.today())
+            new_line_item.start_time = str(datetime.now().time()).split('.')[0]
+            new_line_item.end_date = str(date.today() + timedelta(days=30)) #run add for a month
+            new_line_item.end_time = str(datetime.now().time()).split('.')[0]
+            new_line_item.dlv_priority = 1
+
+#database access
+            order.save()  
+                           
+            if not order:            
+                errors = 'failure saving new order'  
+                return render(request, reverse('supply/order_new.html'), {'errors':str(errors), 'inputOrderName':order_name_entry, 'inputCompany':order_company_entry, 'inputLineName':line_name_entry, 'inputPlatform':line_platform_entry, 'type':line_type_entry, 'adUnit_by_site_list':adUnit_by_site_list, 'adUnit_selected_list':adUnit_selected_list,'line_item':new_line_item})
+
+            new_line_item.order= order
+                
+            new_line_item.save() 
+
+            if not new_line_item:
+                errors = 'failure saving new line for order' 
+                return render(request, 'supply/order_new.html', {'errors':str(errors), 'inputOrderName':order_name_entry, 'inputCompany':order_company_entry, 'inputLineName':line_name_entry, 'inputPlatform':line_platform_entry, 'type':line_type_entry, 'adUnit_by_site_list':adUnit_by_site_list, 'adUnit_selected_list':adUnit_selected_list, 'line_item':new_line_item})                                         
+
+            for item in adUnit_selected_list: 
+                new_line_item.adunits.add(item)
+                                
             return HttpResponseRedirect(reverse('supply:index'))
-        else:
-            err_invalid_new_order_input = 'invalid new order input'  
-            return render(request, reverse('supply/order_new.html', args=(order_id,)), {'errors':err_invalid_new_order_input, 'name':name_entry, 'company':company_entry})
-    else:
-        return render(request, 'supply/order_new.html', {})       
+
+        else: #invalid input
+            return render(request, 'supply/order_new.html', { 'errors':str(errors), 'inputOrderName':order_name_entry, 'inputCompany':order_company_entry, 'inputLineName':line_name_entry, 'inputPlatform':line_platform_entry, 'type':line_type_entry, 'adUnit_by_site_list':adUnit_by_site_list, 'adUnit_selected_list':adUnit_selected_list,'line_item':new_line_item})
+
+    else: # get request
+        return render(request, 'supply/order_new.html', {'adUnit_by_site_list':adUnit_by_site_list,'line_item':new_line_item})       
 
 @login_required
 def order_edit(request, order_id):
@@ -86,20 +167,17 @@ def lines(request):
     pub = get_user_publisher(request.user)
     if pub == None:
         return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
-    print 'lines: publiser is %s'%pub
-    
-    class all_lines_by_order:
-        line_item_list = []
-        one_order = None   
         
     all_orders_with_line_items = []
     all_line_items =[]
     
+    class all_lines_by_order:
+        line_item_list = []
+        order = None
+        
     all_order_items = Order.objects.filter(pub=pub)
     for item in all_order_items:
         all_line_items +=  LineItem.objects.filter(order=item)
-        print 'all line items after this iteration" %s'%all_line_items
     
     for order in all_order_items:
         line_item_list = []
@@ -130,43 +208,50 @@ def line_new(request, order_id):
     if pub != current_order.pub:
         return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
 
-
-    #field.choice lookup in template
-    l= LineItem()
-
     errors = []
-    adUnit_name_entry_list = AdUnit.objects.all()
+    adUnit_selected_list =[] #retrieved from POST
     
-    if request.method == 'POST':        
-        input_queryDict = {}
+    adUnit_by_site_list = []  #generated for both GET and POST from database
+
+    class adUnit_by_site:
+        site_with_adUnit = None
+        entire_adUnit_list = []
         
-        for key in request.POST.iterkeys():
-            input_queryDict[key] = request.POST.getlist(key)
+    #field.choice lookup in template
+    new_line_item= LineItem()
+    
+    current_site_list = Site.objects.filter(pub=pub)
+    
+    for item in current_site_list:    
+        element = adUnit_by_site()
+        if (len(AdUnit.objects.filter(site=item)) > 0):#only add those sites with adUnits for display
+            element.site_with_adUnit = item
+            element.entire_adUnit_list = AdUnit.objects.filter(site=item)
+            adUnit_by_site_list.append(element)      
+   
+    if request.method == 'POST':   
         
-        name_entry = input_queryDict['inputLineName'][0]
+        name_entry = request.POST['inputLineName'] 
+        platform_entry = request.POST['inputPlatform']
+        type_entry = request.POST['type']
         
         if not name_entry:
             errors.append('Name')
-        
-        platform_entry = input_queryDict['inputPlatform'][0]
-        
         if not platform_entry:
-            errors.append('Platform')
-            
-        type_entry = input_queryDict['type'][0]
+            errors.append('Platform')        
         if not type_entry:
             errors.append('Type')
         
-        #multiple choice, passed in as dictionary
-        if 'inventory' in input_queryDict:
-            adUnit_name_entry_list = input_queryDict['inventory']
+        inventory_queryDict = []
 
+        inventory_queryDict = request.POST.getlist('inventory')
+        if (len(inventory_queryDict) > 0 ):
+            for id in inventory_queryDict:#received adunit.id from POST, convert to object
+                adUnit_selected_list.append(AdUnit.objects.get(pk=id)) 
         else:
             errors.append('Inventory')
 
         if len(errors)==0:
-
-            new_line_item = LineItem()
             new_line_item.name = name_entry
             new_line_item.platform = platform_entry
             new_line_item.order= current_order
@@ -185,28 +270,15 @@ def line_new(request, order_id):
             new_line_item.dlv_priority = 1
              
             new_line_item.save() 
-            
-            for item in adUnit_name_entry_list: 
+
+            for item in adUnit_selected_list: 
                 new_line_item.adunits.add(item)
-                                         
+           
             return HttpResponseRedirect(reverse('supply:lines'))
         else:
-            
-            adUnit_selected_list =[]
-
-            #mark previously selected items?            
-            if (len(adUnit_name_entry_list) >0):
-                adUnit_selected_list = adUnit_name_entry_list
-                adUnit_name_entry_list = AdUnit.objects.all()
-             
-            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
+            return render(request, 'supply/line_new.html', {'errors':str(errors), 'order_id': order_id, 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_by_site_list':adUnit_by_site_list, 'adUnit_selected_list':adUnit_selected_list,'line_item':new_line_item})
     else:
-        pub = get_user_publisher(request.user)
-        if pub == None:
-            return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
-        adUnit_name_entry_list = AdUnit.objects.all()
-        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
+        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_by_site_list':adUnit_by_site_list, 'line_item':new_line_item})
 
 @login_required
 def line_edit(request, line_id):

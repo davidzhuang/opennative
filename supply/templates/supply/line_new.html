@@ -1,5 +1,5 @@
-<!---Inherits base.html --->
-{% extends "supply/base.html" %}
+<!---Inherits line_new_base.html, for purposes of putting new order and new line in the same web page --->
+{% extends "supply/line_new_base.html" %}
 
 <!---title block --->
 {% block page_title %}
@@ -21,78 +21,10 @@
               <li class="active"><a href="{% url 'supply:lines' %}">Line Items</a></li>
 {% endblock %}
 
-<!---Block for right pane --->
-{% block right_pane_block %}
-          <form class="form-horizontal" role="form" action="{% url 'supply:line_new' order_id %}" method="post">
-            {% csrf_token %}
-			{% if errors %}
-       		 <p style="color: red">
-          	  {{errors}}
-       		 </p>
-       		 {% endif %}
-            <div class="panel panel-default table-responsive">
-              <div class="panel-heading">
-                <h3 class="panel-title">New Line Item</h3>
-              </div><!--/panel-head-->
-              <div class="panel-body">                        
-                <div class="form-group">
-                  <label for="inputLineName" class="col-lg-2 control-label">Name</label>
-                  <div class="col-lg-10">
-                    <input type="text" class="form-control" name="inputLineName" placeHolder="Line Item Name">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputPlatform" class="col-lg-2 control-label">Platform</label>
-                  <div class="col-lg-10", id="inputPlatform">
-                    <select class="form-control" name="platform">
-                      {% for choice in line_item.PLATFORM_TYPES %}
-                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-
-                <label class="control-label">Settings</label>
-                <div class="form-group">
-                  <label for="type" class="col-lg-2 control-label">Type</label>
-                  <div class="col-lg-10">
-                    <select class="form-control" name="type">
-                      {% for choice in line_item.LINE_ITEM_TYPES %}
-                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-
-                <label class="control-label">Targeting</label>
-                <div class="form-group">
-                  <label for="inventory" class="col-lg-2 control-label">Inventory</label>
-                  <div class="col-lg-10">
-                    {% for adUnit in adUnit_name_entry_list %}
-                    <label class="checkbox">
-                      <input type="checkbox" value="{{adUnit.id}}">{{adUnit.name}}
-                    </label>
-                    {% endfor %}
-                    <label class="checkbox">
-                      <input type="checkbox" value="1">Ad Unit 1
-                    </label>
-                    <label class="checkbox">
-                      <input type="checkbox" value="2">Ad Unit 2
-                    </label>
-                  </div>
-                </div>
-
-
-              </div><!--/panel-body-->
-
-              <div class="panel-footer">
-                <div class="form-group">
-                  <div class="col-lg-offset-2 col-lg-10">
-                    <button type="submit" class="btn btn-default">Save</button>
-                  </div>
-                </div>
-              </div><!--/panel-footer-->
-
-            </div><!--/panel-->
-          </form>
-{% endblock %}
+{% block err_msg %}
+	{% if errors %}
+      <p style="color: red">
+        Invalid input for new line: {{errors}}
+       </p>
+    {% endif %}
+{% endblock err_msg %}   
