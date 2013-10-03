@@ -34,16 +34,20 @@
                 <div class="form-group">
                   <label for="inputLineName" class="col-lg-2 control-label">Name</label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control" name="inputLineName" placeholder="Line Item Name">
+                    <input type="text" class="form-control" name="inputLineName" value="{{inputLineName}}"> 
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label for="inputPlatform" class="col-lg-2 control-label">Platform</label>
                   <div class="col-lg-10", id="inputPlatform">
-                    <select class="form-control" name="platform">
+                    <select class="form-control" name="inputPlatform">
                       {% for choice in line_item.PLATFORM_TYPES %}
-                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                        {% ifequal inputPlatform choice.0 %}
+                          <option value = "{{ choice.0 }}" selected > {{ choice.1 }} </option>
+                        {% else %}  
+                          <option value = "{{ choice.0 }}"> {{ choice.1 }} </option>
+                        {% endifequal %}
                       {% endfor %}
                     </select>
                   </div>
@@ -55,7 +59,11 @@
                   <div class="col-lg-10">
                     <select class="form-control" name="type">
                       {% for choice in line_item.LINE_ITEM_TYPES %}
-                      <option value = "{{ choice.0 }}" > {{ choice.1 }} </option>
+                        {% ifequal type choice.0 %}
+                          <option value = "{{ choice.0 }}" selected > {{ choice.1 }} </option>
+                        {% else %}  
+                          <option value = "{{ choice.0 }}"> {{ choice.1 }} </option>
+                        {% endifequal %}
                       {% endfor %}
                     </select>
                   </div>
@@ -65,17 +73,19 @@
                 <div class="form-group">
                   <label for="inventory" class="col-lg-2 control-label">Inventory</label>
                   <div class="col-lg-10">
-                    {% for adUnit in adUnit_name_entry_list %}
-                    <label class="checkbox">
-                      <input type="checkbox" value="{{adUnit.id}}">{{adUnit.name}}
-                    </label>
-                    {% endfor %}
-                    <label class="checkbox">
-                      <input type="checkbox" value="1" checked>Ad Unit 1
-                    </label>
-                    <label class="checkbox">
-                      <input type="checkbox" value="2">Ad Unit 2
-                    </label>
+                    {% for element_2 in adUnit_by_site_list %}
+                    <label class="control-label">{{ element_2.site_with_adUnit }}</label>
+                     {% for element_1 in element_2.entire_adUnit_list %}
+                        <label class="checkbox">
+                          {% if element_1.selected %}
+                            <input type="checkbox" name="inventory" value="{{element_1.adUnit.id}}" checked >{{element_1.adUnit.name}} 
+                          {% else %}
+                            <input type="checkbox" name="inventory" value="{{element_1.adUnit.id}}">{{element_1.adUnit.name}}                      
+                          {% endif %}
+                        </label>
+                      {% endfor %} <!--adUnit---> 
+                         
+                    {% endfor %} <!--element --->
                   </div>
                 </div>
 

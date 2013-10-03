@@ -285,69 +285,106 @@ def line_edit(request, line_id):
     user_pub = get_user_publisher(request.user)
     if user_pub == None:
         return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
+    line_to_edit = None
+    
     line_to_edit = LineItem.objects.get(id=line_id)
 
     if user_pub != line_to_edit.order.pub:
         return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
 
     change_flags = []
-    adUnit_name_entry_list = AdUnit.objects.all()
     
-    if request.method == 'POST':        
-        input_queryDict = {}
+    adUnit_selected_list =[]
+    adUnit_by_site_list = []
+    
+    all_adunits_for_user = []
+    
+    class adUnit_by_site:
+        site_with_adUnit = None
+        entire_adUnit_list = []
+
+    class adUnit_with_selection_flag:
+        selected = False
+        adUnit = None
+ 
+    current_site_list = Site.objects.filter(pub=user_pub)
+    
+    for item in current_site_list:   
+        element_2 = adUnit_by_site()
+        element_2.entire_adUnit_list = []
+        retrieved_adUnit_list = []
+        retrieved_adUnit_list = AdUnit.objects.filter(site=item)
         
-        for key in request.POST.iterkeys():
-            input_queryDict[key] = request.POST.getlist(key)
-        
-        name_entry = input_queryDict['inputLineName'][0]
+        if (len(retrieved_adUnit_list) > 0):#only add those sites with adUnits for display
+            element_2.site_with_adUnit = item
+            for au in retrieved_adUnit_list:
+                element_1 = adUnit_with_selection_flag()
+                element_1.adUnit = au
+                element_2.entire_adUnit_list.append(element_1)
+            adUnit_by_site_list.append(element_2) 
+
+    if request.method == 'POST':             
+        name_entry = request.POST['inputLineName'] 
+        platform_entry = request.POST['inputPlatform']
+        type_entry = request.POST['type']
+
         if name_entry:
             change_flags.append('Name')
-        
-        platform_entry = input_queryDict['platform'][0]
-        if not platform_entry:
-            change_flags.append('Platform')
-            
-        type_entry = input_queryDict['type'][0]
-        if not type_entry:
+        if not name_entry:    
+            name_entry = line_to_edit.name #name is mandatory, if no input, use existing
+        if platform_entry:
+            change_flags.append('Platform')        
+        if type_entry:
             change_flags.append('Type')
         
-        #multiple choice, passed in as dictionary
-        if 'inventory' in input_queryDict:
-            adUnit_name_entry_list = input_queryDict['inventory']
+        inventory_queryDict = []
 
-        else:
-            change_flags.append('Inventory')
+        inventory_queryDict = request.POST.getlist('inventory')
+        
+        if (len(inventory_queryDict) > 0 ):
+            for id in inventory_queryDict:#received adunit.id from POST, convert to object
+                element = AdUnit.objects.get(pk=id)
+                adUnit_selected_list.append(element) 
+                
+                for item in adUnit_by_site_list:
+                    for iter in item.entire_adUnit_list:
+                        if  element == iter.adUnit:
+                            iter.selected = True
+                
+        if 'Name' in change_flags: #need to add checking logic that the edited field is valid, for example, not empty
+            line_to_edit.name = name_entry
+        if 'Platform' in change_flags:
+            line_to_edit.platform = platform_entry
+        if 'Type' in change_flags:    
+            line_to_edit.type = type_entry
+
+		#need to also take care of adunit addition and removal here            
             
-        if len(change_flags)>0:
-            if 'Name' in change_flags:
-                line_to_edit.name = name_entry
-            if 'Platform' in change_flags:
-                line_to_edit.platform = platform_entry
-            if 'Type' in change_flags:    
-                line_to_edit.type = type_entry
-
-			#need to also take care of adunit addition and removal here            
-            line_to_edit.save() 
-                                     
-            return HttpResponseRedirect(reverse('supply:lines'))
-        else:
+        if (len (adUnit_selected_list) > 0):
+            line_to_edit.adunits = []
+            for item in adUnit_selected_list:
+                line_to_edit.adunits.add(item)
             
-            adUnit_selected_list =[]
+        line_to_edit.save()                         
 
-            #mark previously selected items?            
-            if (len(adUnit_name_entry_list) >0):
-                adUnit_selected_list = adUnit_name_entry_list
-                adUnit_name_entry_list = AdUnit.objects.all()
-             
-            return render(request, 'supply/line_edit.html', {'line_id': line_id, 'change_flags':'Changed these fileds: '+ str(change_flags), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':line_to_edit})
+        return HttpResponseRedirect(reverse('supply:lines'))
+
     else:
-        pub = get_user_publisher(request.user)
-        if pub == None:
-            return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
-        adUnit_name_entry_list = AdUnit.objects.all()
-        return render(request, 'supply/line_edit.html', {'line_id': line_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':line_to_edit})
+        name_entry = line_to_edit.name
+        platform_entry = line_to_edit.platform
+        type_entry = line_to_edit.type
+        
+        adUnit_retrieved_list = line_to_edit.adunits.all()
+        if (len(adUnit_retrieved_list) > 0):
+            adUnit_selected_list = adUnit_retrieved_list
+        
+        for element in adUnit_selected_list:        
+            for item in adUnit_by_site_list:
+                for iter in item.entire_adUnit_list:
+                    if  element == iter.adUnit:
+                        iter.selected = True
+                
+        return render(request, 'supply/line_edit.html', {'line_id': line_id, 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_by_site_list':adUnit_by_site_list, 'line_item':line_to_edit})
     
 @login_required
 def inventory(request):
