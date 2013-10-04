@@ -50,6 +50,12 @@ def signin(request):
     else:
         return render(request, "accounts/signin.html", {})
 
+def signedout(request):
+    return render(request, "accounts/signedout.html", {})
+
+
+
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)

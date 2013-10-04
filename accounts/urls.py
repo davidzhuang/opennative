@@ -6,6 +6,8 @@ urlpatterns = patterns('accounts.views',
     #url(r'^$', 'index', name='index'),
     # ex: /accounts/signin
     url(r'^signin/$', 'signin', name='signin'),
+    # ex: /accounts/signin
+    url(r'^signedout/$', 'signedout', name='signedout'),
     # ex: /accounts/signup
     url(r'^signup/$', 'signup', name='signup'),
     # ex: /accounts/signup_done
