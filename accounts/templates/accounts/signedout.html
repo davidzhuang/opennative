@@ -14,28 +14,19 @@
   {% endblock %}
 
   <!---Block for Navigation Bar on top of page --->
-  {% block nav_bar_right_block %}
-          <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="{% url 'accounts:signin' %}">Sign in</a></li>
-            <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
-          </ul>
+  {% block nav_bar_block %}
   {% endblock %}
 
   {% block main_row_block %}
     <div class="container">
+     <h1>  </h1>
+      <div class="jumbotron">
+        <p>{{msg}}</p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="{% url 'accounts:signin' %}">Sign back in... &raquo;</a>
+        </p>
+      </div>
 
-      <form class="form-signin" action=""  method="POST">
-        {% csrf_token %}
-        <h4 class="form-signin-heading">You Have Successfully Signed Out</h4>
-        {% if error %}
-            <p style="color: red;">
-                {{error}}
-            </p>
-        {% endif %}
-        <input type="text" class="form-control" name="username" placeholder="Username or Email" autofocus>
-        <input type="password" class="form-control" name="password" placeholder="Password">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In Again</button>
-      </form>
     </div> <!-- /container -->
 
   {% endblock %}

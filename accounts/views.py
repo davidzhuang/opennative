@@ -51,10 +51,9 @@ def signin(request):
         return render(request, "accounts/signin.html", {})
 
 def signedout(request):
-    return render(request, "accounts/signedout.html", {})
-
-
-
+    logout(request)
+    msg = 'You have successfully signed out.'
+    return render(request, "accounts/signedout.html", {'msg':msg})
 
 def signup(request):
     if request.method == 'POST':
@@ -148,3 +147,23 @@ def error(request, type):
                   "msg":"Error in your account." }
     return render(request, "accounts/error.html", {"error" : error })
 
+def account_recovery(request):
+    if request.method == 'POST':
+        input_email = request.POST['user_email']
+        #check email in database
+        user = User.objects.get(email=input_email)
+        
+        #if user:
+            #send email
+         #   return 
+        #else:
+            #error = 'The given email is not registered, please sign up first.'
+            #return
+    
+    
+    
+    
+    return render(request, "accounts/account_recovery.html", {})
+
+def account_recovery_confirmation(request):
+    return render(request, "accounts/account_recovery_confirmation.html", {})
