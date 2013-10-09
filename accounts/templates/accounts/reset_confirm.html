@@ -1,0 +1,37 @@
+#password_reset_confirm.html
+
+
+<!---Inherits frame.html --->
+{% extends "accounts/frame.html" %}
+
+{% load staticfiles %}
+
+<!---title block --->
+{% block page_title %}
+  <title>Password Reset Confirmation- Open Native</title>
+{% endblock %}
+
+  <!---Block for Navigation Bar on top of page --->
+  {% block nav_bar_block %}
+  {% endblock %}
+
+  {% block main_row_block %}
+    <div class="container">
+
+      <div class="jumbotron">
+        <h4>Reset Password:</h4> 
+           
+           
+           {% if validlink %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    {% else %}
+        <p>This reset link is no longer valid!</p>
+    {% endif %}
+      </div>
+    </div> <!-- /container -->
+  {% endblock %}
+

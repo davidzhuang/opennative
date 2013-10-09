@@ -1,0 +1,35 @@
+#password_reset_email.html
+
+<!---Inherits frame.html --->
+{% extends "accounts/frame.html" %}
+
+{% load staticfiles %}
+
+<!---title block --->
+{% block page_title %}
+  <title>Password Reset Email - Open Native</title>
+{% endblock %}
+
+  <!---Block for Navigation Bar on top of page --->
+  {% block nav_bar_block %}
+  {% endblock %}
+
+  {% block main_row_block %}
+    <div class="container">
+
+      <div class="jumbotron">
+           
+        {% block email_text %}
+        You're receiving this e-mail because you requested 
+        a password reset for your user account at {{ site_name }}, with email {{ email }}.
+        
+        Follow the link below to reset your password:
+         {{ protocol}}://{{ domain }}{% url 'accounts:reset_confirm' uidb36=uid token=token %}
+         
+        <p>Your username, in case you've forgotten: {{ user.username }}
+
+         Thanks for using our site! </p>
+        {% endblock email_text %}                
+      </div>
+    </div> <!-- /container -->
+  {% endblock %}

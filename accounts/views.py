@@ -4,12 +4,13 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import * 
 from django.utils.html import strip_tags
 from django.db import IntegrityError
 from django import forms
-import re
 from supply.models import Publisher
 from accounts.models import UserProfile
+from django.contrib.auth.views import password_reset, password_reset_confirm
 
 class FormErrors:
     pass
@@ -147,23 +148,15 @@ def error(request, type):
                   "msg":"Error in your account." }
     return render(request, "accounts/error.html", {"error" : error })
 
-def account_recovery(request):
-    if request.method == 'POST':
-        input_email = request.POST['user_email']
-        #check email in database
-        user = User.objects.get(email=input_email)
-        
-        #if user:
-            #send email
-         #   return 
-        #else:
-            #error = 'The given email is not registered, please sign up first.'
-            #return
-    
-    
-    
-    
-    return render(request, "accounts/account_recovery.html", {})
+#not tested due to email server
+def reset_confirm(request, uidb36=None, token=None):
+    return password_reset_confirm(request, template_name='accounts/reset_confirm.html',
+        uidb36=uidb36, token=token, post_reset_redirect=reverse('accounts:signin'))
 
-def account_recovery_confirmation(request):
-    return render(request, "accounts/account_recovery_confirmation.html", {})
+#not tested due to email server
+def reset(request):
+    return password_reset(request, template_name='accounts/reset_form.html',
+        email_template_name='accounts/reset_email.html',
+        subject_template_name='accounts/reset_subject.txt',
+        post_reset_redirect=reverse('accounts:signin'))
+
