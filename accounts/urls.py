@@ -27,6 +27,9 @@ urlpatterns = patterns('accounts.views',
     # ex: /accounts/error
     url(r'^error/(?P<type>\w+)/$', 'error', name='error'),
 
+    #user name autocomplete URL, /accounts/signup/lookup
+    url(r'^signup/lookup', 'username_lookup'),
+    #end user name autocomplete
     # ex: /accounts/account_recovery
     #url(r'^account_recovery/$', 'account_recovery', name='account_recovery'),
     # ex: /accounts/account_recovery_confirmation

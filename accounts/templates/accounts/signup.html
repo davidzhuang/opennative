@@ -49,6 +49,7 @@
                 <p style="color: red;">{{errors.username}}</p>
               {% endif %}
               <p class="help-block">Username can contain letters or numbers</p>
+              <p class="usernameTaken colorRed hide" >Username already taken, please pick a different one </p>
             </div>
           </div>
  
@@ -551,4 +552,18 @@
       </form>
     </div> <!-- /container -->
 
+  {% endblock %}
+  
+  {% block page_end_file_links %}
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+
+  <!-- signup autocomplete JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/accounts/js/autoCom.js"></script>
+    
+    <!---Block for page end file links --->
+    
   {% endblock %}

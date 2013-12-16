@@ -12,6 +12,10 @@ from supply.models import Publisher
 from accounts.models import UserProfile
 from django.contrib.auth.views import password_reset, password_reset_confirm
 
+#for user name autocomplete
+from django.utils import simplejson
+#end user name autocomplete
+
 class FormErrors:
     pass
 
@@ -160,3 +164,20 @@ def reset(request):
         subject_template_name='accounts/reset_subject.txt',
         post_reset_redirect=reverse('accounts:signin'))
 
+#user name auto complete
+
+def username_lookup(request):
+    # Default return list
+    results = []
+    if request.method == "GET":
+        if request.GET.has_key(u'term'):
+            value = request.GET[u'term']
+
+            # Ignore queries shorter than length 3
+            if len(value) >= 2:
+                model_results = User.objects.filter(username=value)
+                for x in model_results:
+                  results.append(x.username)
+    json = simplejson.dumps(results)
+    return HttpResponse(json, content_type='application/json')
+#end user name auto complete
