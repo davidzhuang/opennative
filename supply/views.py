@@ -435,92 +435,20 @@ def site_edit(request, site_id):
     if user_pub != site_to_edit.pub:
         return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
 
-    pub = get_user_publisher(request.user)
-    if pub == None:
-        return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
+    if request.method == 'POST':
+        form = site_form(request.POST)
+        if form.is_valid():
+            cleaned_form = form.cleaned_data
 
-    current_order = Order.objects.get(id=order_id)
-
-    if pub != current_order.pub:
-        return HttpResponseRedirect(reverse('supply:error', kwargs={'type':'permission'}))
-
-
-    #field.choice lookup in template
-    l= LineItem()
-
-    errors = []
-    adUnit_name_entry_list = AdUnit.objects.all()
-    
-    if request.method == 'POST':        
-        input_queryDict = {}
-        
-        for key in request.POST.iterkeys():
-            input_queryDict[key] = request.POST.getlist(key)
-        
-        name_entry = input_queryDict['inputLineName'][0]
-        
-        if not name_entry:
-            errors.append('Name')
-        
-        platform_entry = input_queryDict['inputPlatform'][0]
-        
-        if not platform_entry:
-            errors.append('Platform')
-            
-        type_entry = input_queryDict['type'][0]
-        if not type_entry:
-            errors.append('Type')
-        
-        #multiple choice, passed in as dictionary
-        if 'inventory' in input_queryDict:
-            adUnit_name_entry_list = input_queryDict['inventory']
-
+            site_to_edit.name = cleaned_form['site_name']
+            site_to_edit.url = cleaned_form['site_URL']
+            site_to_edit.save()
+            return HttpResponseRedirect('/supply/inventory/')
         else:
-            errors.append('Inventory')
-
-        if len(errors)==0:
-
-            new_line_item = LineItem()
-            new_line_item.name = name_entry
-            new_line_item.platform = platform_entry
-            new_line_item.order= current_order
-            new_line_item.type = type_entry
-            
-            #non-mandatory attributes 
-            new_line_item.status = 'DFT'
-            
-            #hardcoded date/time for testing purposes
-
-            new_line_item.start_date = str(date.today())
-            new_line_item.start_time = str(datetime.now().time()).split('.')[0]
-            new_line_item.end_date = str(date.today() + timedelta(days=30)) #run add for a month
-            new_line_item.end_time = str(datetime.now().time()).split('.')[0]
-
-            new_line_item.dlv_priority = 1
-             
-            new_line_item.save() 
-            
-            for item in adUnit_name_entry_list: 
-                new_line_item.adunits.add(item)
-                                         
-            return HttpResponseRedirect(reverse('supply:lines'))
-        else:
-            
-            adUnit_selected_list =[]
-
-            #mark previously selected items?            
-            if (len(adUnit_name_entry_list) >0):
-                adUnit_selected_list = adUnit_name_entry_list
-                adUnit_name_entry_list = AdUnit.objects.all()
-             
-            return render(request, 'supply/line_new.html', {'order_id': order_id, 'errors':'Invalid input for '+ str(errors), 'inputLineName':name_entry, 'inputPlatform':platform_entry, 'type':type_entry, 'adUnit_name_entry_list':adUnit_name_entry_list, 'line_item':l})
+            err_invalid_new_order_input = 'Invalid site editing'
+            return render(request, 'supply/site_edit.html', {'errors':err_invalid_new_order_input, 'site_id':site_id, 'name':site_to_edit.name, 'url':site_to_edit.url})
     else:
-        pub = get_user_publisher(request.user)
-        if pub == None:
-            return HttpResponseRedirect(reverse('accounts:error', kwargs={'type':'account'}))
-
-        adUnit_name_entry_list = AdUnit.objects.all()
-        return render(request, 'supply/line_new.html', {'order_id': order_id, 'adUnit_name_entry_list':adUnit_name_entry_list, 'adUnit_item':l})
+        return render(request, 'supply/site_edit.html', {'site_id':site_id, 'name':site_to_edit.name, 'url':site_to_edit.url})
 
 @login_required
 def adunits(request):

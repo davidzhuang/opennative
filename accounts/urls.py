@@ -15,7 +15,7 @@ urlpatterns = patterns('accounts.views',
     url(r'^signup/$', 'signup', name='signup'),
     # ex: /accounts/signup_done
     url(r'^signup_done/$', 'signup_done', name='signup_done'),
-    # ex: /accounts/reset_password_request
+    # ex: /accounts/reset
     url(r'^reset/$', 'reset', name='reset'),
     # ex: /accounts/password_sent
 #    url(r'^reset_password_sent/$', 'django.contrib.auth.views.password_reset_done'),
